@@ -3,11 +3,11 @@ require('./assertions/beBlank');
 
 describe('ChipJS', function () {
 
-  beforeEach('instantiate ChipJS', function () {
-    chipJS = new ChipJS;
-  });
-
   describe('#execute', function() {
+
+    beforeEach('instantiate ChipJS', function () {
+      chipJS = new ChipJS;
+    });
 
     describe('0---', function () {
       describe('0E0', function () {
@@ -30,8 +30,9 @@ describe('ChipJS', function () {
       beforeEach('execute opcode', function () {
         chipJS.execute(0x1200);
       });
-      // TODO
-      it('sets program counter to 0xNNN');
+      it('sets program counter to 0xNNN', function () {
+        chipJS.programCounter.should.equal(0x200);
+      });
     });
     describe('2NNN', function () {
       beforeEach('execute opcode', function () {
@@ -42,61 +43,94 @@ describe('ChipJS', function () {
     });
     describe('3XNN', function () {
       beforeEach('execute opcode', function () {
+        var initialProgramCounter = chipJS.programCounter;
+        chipJS.registers[0] = 0x00;
         chipJS.execute(0x3000);
+        var finalProgramCounter = chipJS.programCounter;
       });
       // TODO
-      it('skips next instruction if VX equals 0xNN');
+      it('skips next instruction if VX equals 0xNN', function () {
+        var difference = finalProgramCounter - initialProgramCounter;
+        difference.should.equal(4);
+      });
     });
     describe('4XNN', function () {
       beforeEach('execute opcode', function () {
+        var initialProgramCounter = chipJS.programCounter;
+        chipJS.registers[0] = 0xFF;
         chipJS.execute(0x4000);
+        var finalProgramCounter = chipJS.programCounter;
       });
       // TODO
-      it('skips next instruction if VX does not equal 0xNN');
+      it('skips next instruction if VX does not equal 0xNN', function () {
+        var difference = finalProgramCounter - initialProgramCounter;
+        difference.should.equal(4);
+      });
     });
     describe('5XY0', function () {
       beforeEach('execute opcode', function () {
+        var initialProgramCounter = chipJS.programCounter;
+        chipJS.registers[0] = 0x00;
+        chipJS.registers[1] = 0x00;
         chipJS.execute(0x5010);
+        var finalProgramCounter = chipJS.programCounter;
       });
       // TODO
-      it('skips next instruction if VX equals VY');
+      it('skips next instruction if VX equals VY', function () {
+        var difference = finalProgramCounter - initialProgramCounter;
+        difference.should.equal(4);
+      });
     });
     describe('6XNN', function () {
       beforeEach('execute opcode', function () {
+        chipJS.registers[0] = 0xFF;
         chipJS.execute(0x6000);
       });
       // TODO
-      it('sets VX to 0xNN');
+      it('sets VX to 0xNN', function () {
+        chipJS.registers[0].should.equal(0x00);
+      });
     });
     describe('7XNN', function () {
       beforeEach('execute opcode', function () {
+        chipJS.registers[0] = 0x00;
         chipJS.execute(0x7001);
       });
       // TODO
-      it('adds 0xNN to VX');
+      it('adds 0xNN to VX', function () {
+        chipJS.registers[0].should.equal(0x01);
+      });
     });
     describe('8XY-', function () {
       // TODO
       describe('0', function () {
         beforeEach('execute opcode', function () {
+          chipJS.registers[1] = 0xFF;
+          chipJS.registers[0] = 0x00;
           chipJS.execute(0x8010);
         });
         // TODO
-        it('stores VY in VX');
+        it('stores VY in VX', function () {
+          chipJS.registers[0].should.equal(0xFF);
+        });
       });
       describe('1', function () {
         beforeEach('execute opcode', function () {
+          chipJS.registers[0] = 0x20;
+          chipJS.registers[1] = 0x40;
           chipJS.execute(0x8011);
         });
         // TODO
-        it('sets VX to bitwise (VX || VY)');
+        it('sets VX to bitwise (VX | VY)', function () {
+          chipJS.registers[1].should.equal(0x60);
+        });
       });
       describe('2', function () {
         beforeEach('execute opcode', function () {
           chipJS.execute(0x8012);
         });
         // TODO
-        it('sets VX to bitwise (VX && VY)');
+        it('sets VX to bitwise (VX & VY)');
       });
       describe('3', function () {
         beforeEach('execute opcode', function () {
