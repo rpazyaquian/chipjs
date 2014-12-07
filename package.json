@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/rpazyaquian/chipjs",
   "devDependencies": {
-    "mocha": "^2.0.1"
+    "mocha": "^2.0.1",
+    "should": "^4.3.0"
   }
 }
