@@ -7,6 +7,9 @@ describe('ChipJS', function () {
   });
 
   describe('#execute', function() {
+
+    before(:)
+
     describe('0---', function () {
       describe('NNN', function () {
         it('executes subroutine at address NNN', function () {
