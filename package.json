@@ -1,0 +1,22 @@
+{
+  "name": "chipjs",
+  "version": "0.0.1",
+  "description": "JavaScript implementation of a Chip8 interpreter.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rpazyaquian/chipjs.git"
+  },
+  "keywords": [
+    "chip8"
+  ],
+  "author": "Rebecca Paz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rpazyaquian/chipjs/issues"
+  },
+  "homepage": "https://github.com/rpazyaquian/chipjs"
+}
