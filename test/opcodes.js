@@ -1,13 +1,22 @@
 var should = require("should");
 
-describe('Chip8', function () {
+describe('ChipJS', function () {
+
+  beforeEach('instantiate ChipJS', function () {
+    chipJS = new ChipJS;
+  });
+
   describe('#execute', function() {
     describe('0---', function () {
       describe('NNN', function () {
-
+        it('executes subroutine at address NNN', function () {
+          // TODO
+        });
       });
       describe('0E0', function () {
-
+        it('clears the screen', function () {
+          // TODO
+        });
       });
       describe('0EE', function () {
 
