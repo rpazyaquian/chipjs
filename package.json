@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/rpazyaquian/chipjs/issues"
   },
-  "homepage": "https://github.com/rpazyaquian/chipjs"
+  "homepage": "https://github.com/rpazyaquian/chipjs",
+  "devDependencies": {
+    "mocha": "^2.0.1"
+  }
 }
