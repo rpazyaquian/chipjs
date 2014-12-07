@@ -10,20 +10,18 @@ describe('ChipJS', function () {
   describe('#execute', function() {
 
     describe('0---', function () {
-      describe('NNN', function () {
-        // TODO
-        it('executes subroutine at address NNN');
-      });
       describe('0E0', function () {
         beforeEach('execute opcode', function () {
           chipJS.execute(0x00E0);
         });
-
         it('clears the screen', function () {
           chipJS.display.should.beBlank;
         });
       });
       describe('0EE', function () {
+        beforeEach('execute opcode', function () {
+          chipJS.execute(0x00EE);
+        });
         // TODO
         it('returns from a subroutine');
       });

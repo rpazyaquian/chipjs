@@ -45,7 +45,7 @@ ChipJS will emulate a CHIP-8 machine and the CHIP-8 language via state and behav
 
 | Opcode | Operation |
 | ------ | --------- |
-| 0NNN | Execute machine language subroutine at address NNN |
+| 0NNN | Execute machine language subroutine at address NNN (more or less deprecated) |
 | 00E0 | Clear the screen |
 | 00EE | Return from a subroutine |
 | 1NNN | Jump to address NNN |
