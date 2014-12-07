@@ -1,4 +1,5 @@
 var should = require("should");
+require('./test/assertions/beBlank');
 
 describe('ChipJS', function () {
 
@@ -7,8 +8,6 @@ describe('ChipJS', function () {
   });
 
   describe('#execute', function() {
-
-    before(:)
 
     describe('0---', function () {
       describe('NNN', function () {
@@ -19,10 +18,12 @@ describe('ChipJS', function () {
       describe('0E0', function () {
         it('clears the screen', function () {
           // TODO
+          chipJS.execute(0x00E0);
+          chipJS.display.should.beBlank;
         });
       });
       describe('0EE', function () {
-
+        // TODO
       });
     });
     describe('1NNN', function () {

@@ -1,8 +1,8 @@
-var should = require("should");
+// var should = require("should");
 var _ = require("underscore");
 
-module.exports = function () {
-  should.Assertion.add(
+module.exports = function (global) {
+  global.should.Assertion.add(
     'beBlank',
 
     function () {
