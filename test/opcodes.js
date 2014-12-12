@@ -1,6 +1,8 @@
 var should = require("should");
+var _und = require('underscore');
+var ChipJS = require('../src/index.js');
+
 require('./assertions/beBlank');
-_und = require('underscore');
 
 describe('ChipJS', function () {
 
