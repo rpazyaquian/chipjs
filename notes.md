@@ -32,8 +32,6 @@ ChipJS will emulate a CHIP-8 machine and the CHIP-8 language via state and behav
     - allows for subroutines
   - a **program counter**
     - keeps track of where in memory the program is currently executing
-  - a **stack pointer**
-    - keeps track of the position in the subroutine stack
   - a **pixel display**, implemented as a 2D array
     - 64x32 pixels, potentially other sizes as well
   - an 8-bit **sound timer** register
