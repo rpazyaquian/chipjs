@@ -168,7 +168,42 @@ var ChipJS = function() {
 
     return operation;
 
-  }
+  },
+  // opcode functions
+  this.clearScreen = function() {},
+  this.returnFromSubroutine = function() {},
+  this.jumpToAddress = function() {},
+  this.executeSubroutine = function() {},
+  this.skipIfVXEqual = function() {},
+  this.skipIfVXNotEqual = function() {},
+  this.skipIfVXVYEqual = function() {},
+  this.storeToVX = function() {},
+  this.addToVX = function() {},
+  this.storeVYToVX = function() {},
+  this.setVXToVXOrVY = function() {},
+  this.setVXToVXAndVY = function() {},
+  this.setVXToVXXorVY = function() {},
+  this.addVYToVX = function() {},
+  this.subtractVYFromVX = function() {},
+  this.storeRightShiftVYToVX = function() {},
+  this.setVXtoVYMinusVX = function() {},
+  this.storeLeftShiftVYToVX = function() {},
+  this.skipIfVXVYNotEqual = function() {},
+  this.storeAddressToI = function() {},
+  this.jumpToAddressV0 = function() {},
+  this.setVXToRandom = function() {},
+  this.drawSprite = function() {},
+  this.skipIfKeyPressed = function() {},
+  this.skipIfKeyNotPressed = function() {},
+  this.storeDelayTimerToVX = function() {},
+  this.storeKeypressToVX = function() {},
+  this.setDelayTimerToVX = function() {},
+  this.setSoundTimerToVX = function() {},
+  this.addVXToI = function() {},
+  this.setIToFontDigit = function() {},
+  this.storeBCDOfVx = function() {},
+  this.storeRegistersToMemory = function() {},
+  this.loadRegistersFromMemory = function() {}
 };
 
 
