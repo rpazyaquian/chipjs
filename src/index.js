@@ -170,40 +170,146 @@ var ChipJS = function() {
 
   },
   // opcode functions
-  this.clearScreen = function() {},
-  this.returnFromSubroutine = function() {},
-  this.jumpToAddress = function() {},
-  this.executeSubroutine = function() {},
-  this.skipIfVXEqual = function() {},
-  this.skipIfVXNotEqual = function() {},
-  this.skipIfVXVYEqual = function() {},
-  this.storeToVX = function() {},
-  this.addToVX = function() {},
-  this.storeVYToVX = function() {},
-  this.setVXToVXOrVY = function() {},
-  this.setVXToVXAndVY = function() {},
-  this.setVXToVXXorVY = function() {},
-  this.addVYToVX = function() {},
-  this.subtractVYFromVX = function() {},
-  this.storeRightShiftVYToVX = function() {},
-  this.setVXtoVYMinusVX = function() {},
-  this.storeLeftShiftVYToVX = function() {},
-  this.skipIfVXVYNotEqual = function() {},
-  this.storeAddressToI = function() {},
-  this.jumpToAddressV0 = function() {},
-  this.setVXToRandom = function() {},
-  this.drawSprite = function() {},
-  this.skipIfKeyPressed = function() {},
-  this.skipIfKeyNotPressed = function() {},
-  this.storeDelayTimerToVX = function() {},
-  this.storeKeypressToVX = function() {},
-  this.setDelayTimerToVX = function() {},
-  this.setSoundTimerToVX = function() {},
-  this.addVXToI = function() {},
-  this.setIToFontDigit = function() {},
-  this.storeBCDOfVx = function() {},
-  this.storeRegistersToMemory = function() {},
-  this.loadRegistersFromMemory = function() {}
+  this.clearScreen = function(opcode) {
+    // clear the screen
+    // i.e. set all pixels in array to 0
+  },
+  this.returnFromSubroutine = function(opcode) {
+    // iirc, what happens is
+    // you pop off the top of the subroutine stack
+    // and jump to that address
+  },
+  this.jumpToAddress = function(opcode) {
+    // sets the program counter to the address
+    // specified by the opcode
+  },
+  this.executeSubroutine = function(opcode) {
+    // pushes current location onto subroutine stack
+    // and jumps to specified address
+  },
+  this.skipIfVXEqual = function(opcode) {
+    // skip the next instruction (i.e. incrememnt PC by 2)
+    // if VX equals NN
+  },
+  this.skipIfVXNotEqual = function(opcode) {
+    // same as above, but if VX does not equal NN
+  },
+  this.skipIfVXVYEqual = function(opcode) {
+    // skip if VX and VY's values are equal
+  },
+  this.storeToVX = function(opcode) {
+    // write the value NN to VX
+  },
+  this.addToVX = function(opcode) {
+    // add NN to value of VX
+  },
+  this.storeVYToVX = function(opcode) {
+    // store value of VY in VX
+  },
+  this.setVXToVXOrVY = function(opcode) {
+    // set VX to (VX | VY)
+  },
+  this.setVXToVXAndVY = function(opcode) {
+    // set VX to (VX & VY)
+  },
+  this.setVXToVXXorVY = function(opcode) {
+    // set VX to (VX ^ VY)
+  },
+  this.addVYToVX = function(opcode) {
+    // add value of VY to VX
+    // set VF to 01 if a carry occurs
+    // set VF to 00 if a carry does not occur
+  },
+  this.subtractVYFromVX = function(opcode) {
+    // subtract value of VY from VX
+    // set VF to 00 if a borrow occurs
+    // set VF to 01 if a borrow does not occur
+  },
+  this.storeRightShiftVYToVX = function(opcode) {
+    // shift VY right by 1 and store that to VX
+    // set VF to least significant bit prior to shift
+  },
+  this.setVXtoVYMinusVX = function(opcode) {
+    // Set register VX to the value of VY minus VX
+    // Set VF to 00 if a borrow occurs
+    // Set VF to 01 if a borrow does not occur
+  },
+  this.storeLeftShiftVYToVX = function(opcode) {
+    // Store the value of register VY shifted left one bit
+    // in register VX
+    // Set register VF to the most significant bit
+    // prior to the shift
+  },
+  this.skipIfVXVYNotEqual = function(opcode) {
+    // skip the next instruction (i.e. incrememnt PC by 2)
+    // if values of VX and VY are not equal
+  },
+  this.storeAddressToI = function(opcode) {
+    // store NNN to address register I
+  },
+  this.jumpToAddressV0 = function(opcode) {
+    // jump to address (NNN + value of V0)
+  },
+  this.setVXToRandom = function(opcode) {
+   // set VX to a random number with a mask of NN
+   // ("mask") functions as a "maximum" of sorts
+  },
+  this.drawSprite = function(opcode) {
+    // Draw a sprite at position VX, VY
+    // with N bytes of sprite data
+    // starting at the address stored in I
+    // Set VF to 01 if any set pixels
+    // are changed to unset, and 00 otherwise
+  },
+  this.skipIfKeyPressed = function(opcode) {
+    // Skip the following instruction
+    // if the key corresponding to the hex value
+    // currently stored in register VX is pressed
+  },
+  this.skipIfKeyNotPressed = function(opcode) {
+    // Skip the following instruction
+    // if the key corresponding to the hex value
+    // currently stored in register VX is NOT pressed
+  },
+  this.storeDelayTimerToVX = function(opcode) {
+    // Store the current value of the delay timer
+    // in register VX
+  },
+  this.storeKeypressToVX = function(opcode) {
+    // Wait for a keypress and store the result
+    // in register VX
+  },
+  this.setDelayTimerToVX = function(opcode) {
+    // Set the delay timer to the value of register VX
+  },
+  this.setSoundTimerToVX = function(opcode) {
+    // Set the sound timer to the value of register VX
+  },
+  this.addVXToI = function(opcode) {
+    // Add the value stored in register VX to register I
+  },
+  this.setIToFontDigit = function(opcode) {
+    // Set I to the memory address of the sprite data
+    // corresponding to the hexadecimal digit
+    // stored in register VX
+  },
+  this.storeBCDOfVx = function(opcode) {
+    // Store the binary-coded decimal equivalent
+    // of the value stored in register VX
+    // at addresses I, I+1, and I+2
+  },
+  this.storeRegistersToMemory = function(opcode) {
+    // Store the values of registers
+    // V0 to VX (inclusive) in memory
+    // starting at address I
+    // I is set to I + X + 1 after operation
+  },
+  this.loadRegistersFromMemory = function(opcode) {
+    // Fill registers V0 to VX (inclusive)
+    // with the values stored in memory
+    // starting at address I
+    // I is set to I + X + 1 after operation
+  }
 };
 
 
