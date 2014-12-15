@@ -9,7 +9,7 @@ describe('ChipJS', function () {
   describe('#execute', function() {
 
     beforeEach('instantiate ChipJS', function () {
-      chipJS = new ChipJS;
+      chipJS = new ChipJS();
     });
 
     describe('00E0', function () {
