@@ -1,151 +1,13 @@
 var _und = require('underscore');
 
-var ChipJS = function() {
-  this.ram = new Uint8Array(4096);
-  this.registers = new Uint8Array(16);
-  this.stack = new Uint16Array(16);  // addresses are 16-bit
-
-  this.i = 0x000;
-  this.programCounter = 0x200;
-  this.soundTimer = 0x00;
-  this.delayTimer = 0x00;
-
-  this.newDisplay = function() {
-    var display = [];
-    for (var i = 0; i < 32; i++) {
-      display[i] = new Uint8Array(8);
-    }
-    return display;
-  };
-
-  this.display = this.newDisplay();
-
-
-
-  // utility functions
-  this.execute = function(command) {
-    var opcode = this.getOpcode(command);
-    this.matchOpcode(opcode);
-  };
-
-  this.getOpcode = function(input) {
-    var full = input;
-    var head = (input & 0xFF00) >> 8;
-    var tail = input & 0x00FF;
-    var address = this.getAddress(full);
-    var digits = this.splitIntoDigits(full);
-
-    var opcode = {
-      head: head,
-      tail: tail,
-      full: full,
-      address: address,
-      digits: digits
-    };
-
-    return opcode;
-  };
-
-  this.getAddress = function(input) {
-    return (input & 0x0FFF);
-  };
-
-  this.splitIntoDigits = function(input) {
-    var digits = _und.map([12, 8, 4, 0], function (bits) {
-      // shift 0xABCD right by 0 digits
-      // and & with 0xF to get 0xD
-      // shift 0xABCD right by 4 digits
-      // and & with 0xF to get 0xC, etc.
-      return ((input >> bits) & 0xF);
-    });
-
-    return digits;
-  };
-
-  this.matchOpcode = function(opcode) {
-    // this is a disgusting mess
-    // and i feel the need
-    // to apologize for it
-
-    var self = this;
-    var digits = opcode.digits;
-
-    var opcodes = [
-      {
-        0xE0: self.clearScreen.bind(self, opcode),  // 00E0
-        0xEE: self.returnFromSubroutine.bind(self, opcode)  // 00EE
-      }, // 0---
-      self.jumpToAddress.bind(self, opcode),  // 1---
-      self.executeSubroutine.bind(self, opcode),  // 2---
-      self.skipIfVXEqual.bind(self, opcode),  // 3---
-      self.skipIfVXNotEqual.bind(self, opcode),  // 4---
-      self.skipIfVXVYEqual.bind(self, opcode),  // 5---
-      self.storeToVX.bind(self, opcode),  // 6---
-      self.addToVX.bind(self, opcode),  // 7---
-      {
-        0x00: self.storeVYToVX.bind(self, opcode),
-        0x01: self.setVXToVXOrVY.bind(self, opcode),
-        0x02: self.setVXToVXAndVY.bind(self, opcode),
-        0x03: self.setVXToVXXorVY.bind(self, opcode),
-        0x04: self.addVYToVX.bind(self, opcode),
-        0x05: self.subtractVYFromVX.bind(self, opcode),
-        0x06: self.storeRightShiftVYToVX.bind(self, opcode),
-        0x07: self.setVXtoVYMinusVX.bind(self, opcode),
-        0x0E: self.storeLeftShiftVYToVX.bind(self, opcode)
-      },  // 8---
-      self.skipIfVXVYNotEqual.bind(self, opcode),  // 9---
-      self.storeAddressToI.bind(self, opcode),  // A---
-      self.jumpToAddressV0.bind(self, opcode),  // B---
-      self.setVXToRandom.bind(self, opcode),  // C---
-      self.drawSprite.bind(self, opcode),  // D---
-      {
-        0x9E: self.skipIfKeyPressed.bind(self, opcode),
-        0xA1: self.skipIfKeyNotPressed.bind(self, opcode)
-      },  // E---
-      {
-        0x07: self.storeDelayTimerToVX.bind(self, opcode),
-        0x0A: self.storeKeypressToVX.bind(self, opcode),
-        0x15: self.setDelayTimerToVX.bind(self, opcode),
-        0x18: self.setSoundTimerToVX.bind(self, opcode),
-        0x1E: self.addVXToI.bind(self, opcode),
-        0x29: self.setIToFontDigit.bind(self, opcode),
-        0x33: self.storeBCDOfVx.bind(self, opcode),
-        0x55: self.storeRegistersToMemory.bind(self, opcode),
-        0x65: self.loadRegistersFromMemory.bind(self, opcode)
-      }  // F---
-    ];
-
-    switch (digits[0]) {
-      case 0x0:
-        opcodes[digits[0]][opcode.tail]();
-        break;
-      case 0x8:
-        opcodes[digits[0]][digits[3]]();
-        break;
-      case 0xE:
-        opcodes[digits[0]][opcode.tail]();
-        break;
-      case 0xF:
-        opcodes[digits[0]][opcode.tail]();
-        break;
-      default:
-        opcodes[digits[0]]();
-        break;
-    }
-
-  };
-
-
+module.exports = function(chipJS) {
 
   // opcode functions
-  this.clearScreen = function(opcode) {
-    // TODO
+  chipJS.clearScreen = function(opcode) {
     // clear the screen
     // i.e. set all pixels in array to 0
-    this.display = this.newDisplay();
   };
-
-  this.returnFromSubroutine = function(opcode) {
+  chipJS.returnFromSubroutine = function(opcode) {
     // iirc, what happens is
     // you pop off the top of the subroutine stack
     // and jump to that address
@@ -154,27 +16,18 @@ var ChipJS = function() {
       this.programCounter = newAddress;
     }
   };
-
-  this.jumpToAddress = function(opcode) {
-    // this is working when called directly,
-    // but not through that big ol switch statement
-    // up there...
-
+  chipJS.jumpToAddress = function(opcode) {
     // sets the program counter to the address
     // specified by the opcode
     var address = opcode.address;
-    console.log("HEY HEY I SHOULD BE EXECUTING!");
-    console.log(address);
-    console.log("HEY HEY THE FOLLOWING SHOULD BE THE CHIPJS OBJECT:")
-    console.log(this);
     this.programCounter = address;
   };
-  this.executeSubroutine = function(opcode) {
+  chipJS.executeSubroutine = function(opcode) {
     // pushes current location onto subroutine stack
     // and jumps to specified address
     this.stack.push(this.programCounter);
   };
-  this.skipIfVXEqual = function(opcode) {
+  chipJS.skipIfVXEqual = function(opcode) {
     // skip the next instruction (i.e. incrememnt PC by 2)
     // if VX equals NN
     var x = opcode.digits[1];
@@ -182,55 +35,58 @@ var ChipJS = function() {
       this.programCounter += 2;
     }
   };
-  this.skipIfVXNotEqual = function(opcode) {
+  chipJS.skipIfVXNotEqual = function(opcode) {
     // same as above, but if VX does not equal NN
     var x = opcode.digits[1];
     if (this.registers[x] !== opcode.tail) {
       this.programCounter += 2;
     }
   };
-  this.skipIfVXVYEqual = function(opcode) {
+  chipJS.skipIfVXVYEqual = function(opcode) {
     var x = opcode.digits[1];
     var y = opcode.digits[2];
     if (this.registers[x] === this.registers[y]) {
       this.programCounter += 2;
     }
   };
-  this.storeToVX = function(opcode) {
+  chipJS.storeToVX = function(opcode) {
     // write the value NN to VX
     var x = opcode.digits[1];
     this.registers[x] = opcode.tail;
   };
-  this.addToVX = function(opcode) {
+  chipJS.addToVX = function(opcode) {
     // add NN to value of VX
     var x = opcode.digits[1];
     this.registers[x] += opcode.tail;
   };
-  this.storeVYToVX = function(opcode) {
+  chipJS.storeVYToVX = function(opcode) {
     // store value of VY in VX
     var x = opcode.digits[1];
     var y = opcode.digits[2];
     this.registers[x] = this.registers[y];
   };
-  this.setVXToVXOrVY = function(opcode) {
+  chipJS.setVXToVXOrVY = function(opcode) {
     // set VX to (VX | VY)
     var x = opcode.digits[1];
     var y = opcode.digits[2];
+    console.log(this);
+    console.log(this.registers);
     this.registers[x] = (this.registers[x] | this.registers[y]);
   };
-  this.setVXToVXAndVY = function(opcode) {
+  chipJS.setVXToVXAndVY = function(opcode) {
     // set VX to (VX & VY)
     var x = opcode.digits[1];
     var y = opcode.digits[2];
+    // console.log(this.registers[x]);
     this.registers[x] = (this.registers[x] & this.registers[y]);
   };
-  this.setVXToVXXorVY = function(opcode) {
+  chipJS.setVXToVXXorVY = function(opcode) {
     // set VX to (VX ^ VY)
     var x = opcode.digits[1];
     var y = opcode.digits[2];
     this.registers[x] = (this.registers[x] ^ this.registers[y]);
   };
-  this.addVYToVX = function(opcode) {
+  chipJS.addVYToVX = function(opcode) {
     // add value of VY to VX
     // set VF to 01 if a carry occurs
     // set VF to 00 if a carry does not occur
@@ -245,7 +101,7 @@ var ChipJS = function() {
       // this.registers[x] = total;
     }
   };
-  this.subtractVYFromVX = function(opcode) {
+  chipJS.subtractVYFromVX = function(opcode) {
     // subtract value of VY from VX
     // set VF to 00 if a borrow occurs
     // set VF to 01 if a borrow does not occur
@@ -260,7 +116,7 @@ var ChipJS = function() {
       // this.registers[x] = difference;
     }
   };
-  this.storeRightShiftVYToVX = function(opcode) {
+  chipJS.storeRightShiftVYToVX = function(opcode) {
     // shift VY right by 1 and store that to VX
     var x = opcode.digits[1];
     var y = opcode.digits[2];
@@ -274,7 +130,7 @@ var ChipJS = function() {
     // set VF to least significant bit prior to shift
     this.registers[15] = lsb
   };
-  this.setVXtoVYMinusVX = function(opcode) {
+  chipJS.setVXtoVYMinusVX = function(opcode) {
     // Set register VX to the value of VY minus VX
     var x = opcode.digits[1];
     var y = opcode.digits[2];
@@ -289,7 +145,7 @@ var ChipJS = function() {
       this.registers[x] = difference;
     }
   };
-  this.storeLeftShiftVYToVX = function(opcode) {
+  chipJS.storeLeftShiftVYToVX = function(opcode) {
     // Store the value of register VY shifted left one bit
     // in register VX
 
@@ -312,7 +168,7 @@ var ChipJS = function() {
     // prior to the shift
     this.registers[15] = msb;
   };
-  this.skipIfVXVYNotEqual = function(opcode) {
+  chipJS.skipIfVXVYNotEqual = function(opcode) {
     // skip the next instruction (i.e. incrememnt PC by 2)
     // if values of VX and VY are not equal
     var x = opcode.digits[1];
@@ -321,15 +177,15 @@ var ChipJS = function() {
       this.programCounter += 2;
     }
   };
-  this.storeAddressToI = function(opcode) {
+  chipJS.storeAddressToI = function(opcode) {
     // store NNN to address register I
     this.i = opcode.address;
   };
-  this.jumpToAddressV0 = function(opcode) {
+  chipJS.jumpToAddressV0 = function(opcode) {
     // jump to address (NNN + value of V0)
     this.programCounter = opcode.address + this.registers[0];
   };
-  this.setVXToRandom = function(opcode) {
+  chipJS.setVXToRandom = function(opcode) {
     // set VX to a random number with a mask of NN
     // ("mask") functions as a "maximum" of sorts
     var x = opcode.digits[1];
@@ -340,7 +196,7 @@ var ChipJS = function() {
 
     this.registers[x] = (getRandomInt(0, 256) & opcode.tail);
   };
-  this.drawSprite = function(opcode) {
+  chipJS.drawSprite = function(opcode) {
     // Draw a sprite at position VX, VY
     // with N bytes of sprite data
     // starting at the address stored in I
@@ -350,7 +206,7 @@ var ChipJS = function() {
     var y = opcode.digits[2];
     // TODO
   };
-  this.skipIfKeyPressed = function(opcode) {
+  chipJS.skipIfKeyPressed = function(opcode) {
     // Skip the following instruction
     // if the key corresponding to the hex value
     // currently stored in register VX is pressed
@@ -360,7 +216,7 @@ var ChipJS = function() {
       this.programCounter += 2;
     }
   };
-  this.skipIfKeyNotPressed = function(opcode) {
+  chipJS.skipIfKeyNotPressed = function(opcode) {
     // Skip the following instruction
     // if the key corresponding to the hex value
     // currently stored in register VX is NOT pressed
@@ -370,32 +226,32 @@ var ChipJS = function() {
       this.programCounter += 2;
     }
   };
-  this.storeDelayTimerToVX = function(opcode) {
+  chipJS.storeDelayTimerToVX = function(opcode) {
     // Store the current value of the delay timer
     // in register VX
     var x = opcode.digits[1];
     this.registers[x] = this.delayTimer;
   };
-  this.storeKeypressToVX = function(opcode) {
+  chipJS.storeKeypressToVX = function(opcode) {
     // Wait for a keypress and store the result
     // in register VX
   };
-  this.setDelayTimerToVX = function(opcode) {
+  chipJS.setDelayTimerToVX = function(opcode) {
     // Set the delay timer to the value of register VX
     var x = opcode.digits[1];
     this.delayTimer = this.registers[x];
   };
-  this.setSoundTimerToVX = function(opcode) {
+  chipJS.setSoundTimerToVX = function(opcode) {
     // Set the sound timer to the value of register VX
     var x = opcode.digits[1];
     this.soundTimer = this.registers[x];
   };
-  this.addVXToI = function(opcode) {
+  chipJS.addVXToI = function(opcode) {
     // Add the value stored in register VX to register I
     var x = opcode.digits[1];
     this.i += this.registers[x];
   };
-  this.setIToFontDigit = function(opcode) {
+  chipJS.setIToFontDigit = function(opcode) {
     // Set I to the memory address of the sprite data
     // corresponding to the hexadecimal digit
     // stored in register VX
@@ -403,7 +259,7 @@ var ChipJS = function() {
     // where are the fonts stored?
 
   };
-  this.storeBCDOfVx = function(opcode) {
+  chipJS.storeBCDOfVx = function(opcode) {
     // Store the binary-coded decimal equivalent
     // of the value stored in register VX
     // at addresses I, I+1, and I+2
@@ -423,7 +279,7 @@ var ChipJS = function() {
     this.ram[tensAddress] = tens;
     this.ram[onesAddress] = ones;
   };
-  this.storeRegistersToMemory = function(opcode) {
+  chipJS.storeRegistersToMemory = function(opcode) {
     // Store the values of registers
     // V0 to VX (inclusive) in memory
     // starting at address I
@@ -437,7 +293,7 @@ var ChipJS = function() {
 
     this.i = originalI + x + 1;
   };
-  this.loadRegistersFromMemory = function(opcode) {
+  chipJS.loadRegistersFromMemory = function(opcode) {
     // Fill registers V0 to VX (inclusive)
     // with the values stored in memory
     // starting at address I
@@ -453,5 +309,3 @@ var ChipJS = function() {
   }
 
 };
-
-module.exports = ChipJS;
