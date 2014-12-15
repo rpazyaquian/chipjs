@@ -20,9 +20,39 @@ var ChipJS = function() {
 
   this.display = this.newDisplay();
 
+  this.fonts = function() {
+    var ram = this.ram;
+    var fonts = [
+      0xF0, 0x90, 0x90, 0x90, 0xF0,
+      0x20, 0x60, 0x20, 0x20, 0x70,
+      0xF0, 0x10, 0xF0, 0x80, 0xF0,
+      0xF0, 0x10, 0xF0, 0x10, 0xF0,
+      0x90, 0x90, 0xF0, 0x10, 0x10,
+      0xF0, 0x80, 0xF0, 0x10, 0xF0,
+      0xF0, 0x80, 0xF0, 0x90, 0xF0,
+      0xF0, 0x10, 0x20, 0x40, 0x40,
+      0xF0, 0x90, 0xF0, 0x90, 0xF0,
+      0xF0, 0x90, 0xF0, 0x10, 0xF0,
+      0xF0, 0x90, 0xF0, 0x90, 0x90,
+      0xE0, 0x90, 0xE0, 0x90, 0xE0,
+      0xF0, 0x80, 0x80, 0x80, 0xF0,
+      0xE0, 0x90, 0x90, 0x90, 0xE0,
+      0xF0, 0x80, 0xF0, 0x80, 0xF0,
+      0xF0, 0x80, 0xF0, 0x80, 0x80
+    ]
 
+    for (var i = 0, length = fonts.length; i < length; i++) {
+      ram[i] = fonts[i];
+    }
+  };
+
+  this.fonts();
 
   // utility functions
+  this.fontLocation = function(digit) {
+    return digit * 5;
+  }
+
   this.execute = function(command) {
     var opcode = this.getOpcode(command);
     this.matchOpcode(opcode);
@@ -132,14 +162,38 @@ var ChipJS = function() {
         opcodes[digits[0]]();
         break;
     }
+  };
+
+  this.writeToDisplay = function(row, column, offset, spriteData) {
+
+    var leftDidUnset;
+    var rightDidUnset;
+
+    if (offset > 0) {
+
+      var leftSpriteData = spriteData >> offset;
+      var leftDisplayData = self.display[row][column];
+      self.display[row][column] = self.display[row][column] ^ leftSpriteData;
+      var newLeftDisplayData = self.display[row][column];
+      leftDidUnset = leftDisplayData & newLeftDisplayData;
+
+      if (column != 7) {
+        var offsetColumn = column + 1;
+
+        var rightSpriteData = ((spriteData << (8 - offset)) & 0xFF);
+        var rightDisplayData = self.display[row][offsetColumn];
+        self.display[row][offsetColumn] = self.display[row][offsetColumn] ^ rightSpriteData;
+        var newRightDisplayData = self.display[row][offsetColumn];
+        rightDidUnset = rightDisplayData & newRightDisplayData;
+      }
+    }
+
+    return (leftDidUnset | rightDidUnset);
 
   };
 
-
-
   // opcode functions
   this.clearScreen = function(opcode) {
-    // TODO
     // clear the screen
     // i.e. set all pixels in array to 0
     this.display = this.newDisplay();
@@ -163,10 +217,6 @@ var ChipJS = function() {
     // sets the program counter to the address
     // specified by the opcode
     var address = opcode.address;
-    console.log("HEY HEY I SHOULD BE EXECUTING!");
-    console.log(address);
-    console.log("HEY HEY THE FOLLOWING SHOULD BE THE CHIPJS OBJECT:")
-    console.log(this);
     this.programCounter = address;
   };
   this.executeSubroutine = function(opcode) {
@@ -244,6 +294,7 @@ var ChipJS = function() {
       this.registers[15] = 0x00;
       // this.registers[x] = total;
     }
+    this.registers[x] = total;
   };
   this.subtractVYFromVX = function(opcode) {
     // subtract value of VY from VX
@@ -259,6 +310,7 @@ var ChipJS = function() {
       this.registers[15] = 0x01;
       // this.registers[x] = difference;
     }
+    this.registers[x] = difference;
   };
   this.storeRightShiftVYToVX = function(opcode) {
     // shift VY right by 1 and store that to VX
@@ -341,6 +393,8 @@ var ChipJS = function() {
     this.registers[x] = (getRandomInt(0, 256) & opcode.tail);
   };
   this.drawSprite = function(opcode) {
+    var self = this;
+    self.registers[15] = 0x00;
     // Draw a sprite at position VX, VY
     // with N bytes of sprite data
     // starting at the address stored in I
@@ -348,7 +402,50 @@ var ChipJS = function() {
     // are changed to unset, and 00 otherwise
     var x = opcode.digits[1];
     var y = opcode.digits[2];
-    // TODO
+    var n = opcode.digits[3];
+
+    var column = Math.floor(x/8);
+    var offset = x % 8;
+
+    for (var i = 0; i < n; i++) {
+      var row = y+i;
+      var spriteData = self.ram[self.i];
+      var pixelsDidUnset = writeToDisplay(row, column, offset, spriteData);
+      if ((self.registers[15] == 0x00) & pixelsDidUnset) {
+        self.registers[15] == 0x01;
+      }
+    }
+
+    var writeToDisplay = function(row, column, offset, spriteData) {
+
+      var leftDidUnset = 0;
+      var rightDidUnset = 0;
+
+      if (offset > 0) {
+
+        var leftSpriteData = spriteData >> offset;
+        var leftDisplayData = self.display[row][column];
+        self.display[row][column] = self.display[row][column] ^ leftSpriteData;
+        var newLeftDisplayData = self.display[row][column];
+        leftDidUnset = leftDisplayData & newLeftDisplayData;
+
+        if (column != 7) {
+          var offsetColumn = column + 1;
+
+          var rightSpriteData = ((spriteData << (8 - offset)) & 0xFF);
+          var rightDisplayData = self.display[row][offsetColumn];
+          self.display[row][offsetColumn] = self.display[row][offsetColumn] ^ rightSpriteData;
+          var newRightDisplayData = self.display[row][offsetColumn];
+          rightDidUnset = rightDisplayData & newRightDisplayData;
+        }
+      }
+
+      if (leftDidUnset | rightDidUnset) {
+        self.registers[15] = 0x01;
+      };
+
+    };
+
   };
   this.skipIfKeyPressed = function(opcode) {
     // Skip the following instruction
@@ -379,6 +476,7 @@ var ChipJS = function() {
   this.storeKeypressToVX = function(opcode) {
     // Wait for a keypress and store the result
     // in register VX
+    // TODO
   };
   this.setDelayTimerToVX = function(opcode) {
     // Set the delay timer to the value of register VX
@@ -400,8 +498,8 @@ var ChipJS = function() {
     // corresponding to the hexadecimal digit
     // stored in register VX
 
-    // where are the fonts stored?
-
+    var x = opcode.digits[1];
+    this.i = this.fontLocation(x);
   };
   this.storeBCDOfVx = function(opcode) {
     // Store the binary-coded decimal equivalent
@@ -432,7 +530,7 @@ var ChipJS = function() {
     var x = opcode.digits[1];
     var originalI = self.i;
     _und.each(_und.range(x+1), function(index) {
-      self.ram[i+index] = self.registers[index];
+      self.ram[self.i+index] = self.registers[index];
     });
 
     this.i = originalI + x + 1;
@@ -446,7 +544,7 @@ var ChipJS = function() {
     var x = opcode.digits[1];
     var originalI = self.i;
     _und.each(_und.range(x+1), function(index) {
-      self.registers[index] = self.ram[i+index];
+      self.registers[index] = self.ram[self.i+index];
     });
 
     this.i = originalI + x + 1;
