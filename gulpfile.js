@@ -15,22 +15,18 @@ var reactify = require('reactify');
 
 
 gulp.task('react-watch', function() {
-  // vOv just go with it
-  // assumes your scripts live in /src/
   var bundler = watchify(browserify('./app/jsx/main.jsx', watchify.args)
     .transform(reactify));
 
-  // bundler.transform('brfs');
-
   bundler.on('update', rebundle);
 
-   function rebundle() {
+  function rebundle() {
     return bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source('bundle.js'))
-      .pipe(gulp.dest('./app/scripts'))
-      .pipe(gulp.dest('./build/scripts'));
+      .pipe(gulp.dest('./app/src'))
+      .pipe(gulp.dest('./build/src'));
   }
 
   return rebundle();
