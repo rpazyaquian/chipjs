@@ -10,6 +10,9 @@ var ChipJS = function() {
   this.soundTimer = 0x00;
   this.delayTimer = 0x00;
 
+  this.infiniteLoopState = false;
+  this.awaitingKeyPress = false;
+
   // at the end of the tick, the current state is
   // set to the previous state.
   // we can use the "previous" state
@@ -70,8 +73,6 @@ var ChipJS = function() {
       };
     });
 
-    // console.log(self.keyStates[15]);
-    // console.log(self.keyStates.previous[15]);
     return {
       status: status,
       key: pressedKey
@@ -177,18 +178,43 @@ var ChipJS = function() {
 
   this.fonts();
 
+
+
   // utility functions
+
+  this.tick = function() {
+    var byte1 = this.ram[this.programCounter];
+    var byte2 = this.ram[this.programCounter+1];
+    var command = this.mergeBytes(byte1, byte2);
+
+    console.log(this.programCounter);
+    console.log(command);
+
+    this.execute(command);
+
+    if (!this.awaitingKeyPress) {
+      this.programCounter += 2;
+    }
+  }
+
+  this.execute = function(command) {
+    var opcode = this.getOpcode(command);
+    this.matchOpcode(opcode);
+  };
+
+  this.mergeBytes = function(byte1, byte2) {
+    var full = (byte1 << 8) | byte2;
+    return full;
+  }
+
+  this.loadProgram = function(program) {
+    for (var i = 0, length = program.length; i < length; i++) {
+      this.ram[0x200 + i] = program[i];
+    };
+  };
 
   this.fontLocation = function(digit) {
     return digit * 5;
-  };
-
-  this.execute = function(command) {
-
-    this.programCounter += 2;
-
-    var opcode = this.getOpcode(command);
-    this.matchOpcode(opcode);
   };
 
   this.getOpcode = function(input) {
@@ -231,6 +257,7 @@ var ChipJS = function() {
     // to apologize for it
 
     var self = this;
+
     var digits = opcode.digits;
 
     var opcodes = [
@@ -359,14 +386,24 @@ var ChipJS = function() {
 
     // sets the program counter to the address
     // specified by the opcode
-    var address = opcode.address;
+
+    // but wait!
+    // if this address is the same as
+
+    var address = opcode.address - 2;
+
+    if (address == this.programCounter - 2) {
+      // then we've hit an infinite loop
+      this.infiniteLoopState = true;
+    }
+
     this.programCounter = address;
   };
   this.executeSubroutine = function(opcode) {
     // pushes current location onto subroutine stack
     // and jumps to specified address
     this.stack.push(this.programCounter);
-    this.programCounter = opcode.address;
+    this.programCounter = opcode.address - 2;
   };
   this.skipIfVXEqual = function(opcode) {
     // skip the next instruction (i.e. incrememnt PC by 2)
@@ -523,7 +560,7 @@ var ChipJS = function() {
   };
   this.jumpToAddressV0 = function(opcode) {
     // jump to address (NNN + value of V0)
-    this.programCounter = opcode.address + this.registers[0];
+    this.programCounter = opcode.address + this.registers[0] - 2;
   };
   this.setVXToRandom = function(opcode) {
     // set VX to a random number with a mask of NN
@@ -604,7 +641,6 @@ var ChipJS = function() {
 
     if (this.awaitingKeyPress) {
       var pressedKeyState = this.keyWasPressed();
-      console.log(pressedKeyState);
       if (pressedKeyState.status) {
         this.awaitingKeyPress = false;
         this.registers[x] = pressedKeyState.key;
