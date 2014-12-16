@@ -187,9 +187,6 @@ var ChipJS = function() {
     var byte2 = this.ram[this.programCounter+1];
     var command = this.mergeBytes(byte1, byte2);
 
-    console.log(this.programCounter);
-    console.log(command);
-
     this.execute(command);
 
     if (!this.awaitingKeyPress) {
