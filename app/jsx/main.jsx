@@ -1,8 +1,16 @@
 /** @jsx React.DOM */
 
+var React = require('react');
 var ChipJS = require('chipjs');
 
+var ChipDisplay = require('./chipDisplay.jsx');
+
 var chipJS = new ChipJS();
+
+React.render(
+  <ChipDisplay />,
+  document.getElementById('react-app')
+);
 
 var drawScreen = function() {
   var ctx = document.getElementById('chipjs-canvas').getContext('2d');
