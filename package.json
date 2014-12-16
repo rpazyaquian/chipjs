@@ -7,5 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^7.0.2",
+    "chipjs": "0.0.3",
+    "gulp": "^3.8.10",
+    "gulp-util": "^3.0.1",
+    "react": "^0.12.1",
+    "reactify": "^0.17.1",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.2.1"
+  }
 }
