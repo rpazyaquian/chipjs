@@ -110,18 +110,33 @@ var ChipJS = function() {
     var display = this.display;
     var displayScreen = [];
 
+    // okay, so the issue isn't with the actual display.
+
     for (var i = 0, displayLength = display.length; i < displayLength; i++) {
+
+
       var row = display[i];
       var displayRow = [];
 
       for (var j = 0, rowLength = row.length; j < rowLength; j++) {
+
+        //   '0': 0,
+        //   '1': 0,
+        //   '2': 0,
+        //   '3': 0,
+        //   '4': 0,
+        //   '5': 0,
+        //   '6': 0,
+        //   '7': 0,
+
         var displayByte = row[j];
         var bytePixels = this.byteToPixels(displayByte);
         displayRow.push(bytePixels);
       }
 
-      displayScreen.push(_und.flatten(displayRow));
+      var fullRow = _und.flatten(displayRow)
 
+      displayScreen.push(fullRow);
     }
 
     return displayScreen;
@@ -592,6 +607,7 @@ var ChipJS = function() {
       if ((self.registers[15] == 0x00) & pixelsDidUnset) {
         self.registers[15] == 0x01;
       }
+      self.i++;
     }
 
   };

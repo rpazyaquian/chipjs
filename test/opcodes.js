@@ -38,7 +38,7 @@ describe('ChipJS', function () {
         chipJS.execute(0x1200);
       });
       it('sets program counter to 0xNNN', function () {
-        chipJS.programCounter.should.equal(0x200);
+        chipJS.programCounter.should.equal(0x200 - 2);
       });
     });
 
@@ -61,7 +61,7 @@ describe('ChipJS', function () {
         chipJS.execute(0x2400);
       });
       it('executes subroutine at 0xNNN', function () {
-        chipJS.programCounter.should.equal(0x400);
+        chipJS.programCounter.should.equal(0x400 - 2);
         chipJS.stack.length.should.equal(1);
       });
     });
@@ -75,7 +75,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if VX equals 0xNN', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
 
@@ -88,7 +88,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if VX does not equal 0xNN', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
 
@@ -102,7 +102,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if VX equals VY', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
 
@@ -233,7 +233,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if VX does not equal VY', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
 
@@ -254,7 +254,7 @@ describe('ChipJS', function () {
         chipJS.execute(0xB200);
       });
       it('jumps to address (0xNNN + V0)', function () {
-        chipJS.programCounter.should.equal(0x202);
+        chipJS.programCounter.should.equal(0x202 - 2);
       });
     });
 
@@ -278,18 +278,21 @@ describe('ChipJS', function () {
         // Draw a sprite at position VX, VY
         // with N bytes of sprite data
         // starting at the address stored in I
-        chipJS.registers[0] = 0;
+        chipJS.registers[0] = 1;
         chipJS.registers[1] = 0;
         chipJS.i = 0x400;
-        chipJS.ram[0x400] = 0xFF;
-        chipJS.execute(0xD011);
+        chipJS.ram[0x400] = 0xAA;
+        chipJS.ram[0x401] = 0x55;
+        chipJS.ram[0x402] = 0xAA;
+        chipJS.ram[0x403] = 0x55;
+        chipJS.execute(0xD014);
       });
       it ('draws a sprite to coords (VX, VY) 8 wide, N tall, at I', function () {
         var row0 = chipJS.displayScreen()[0];  // (_, VY), VY = row
-        var column0 = row0[0];  // (VX, VY), VX = column
-        // therefore begin drawing at row 0, column 0
-        var expectedSprite = [1, 1, 1, 1, 1, 1, 1, 1];  // 0xFF in binary
-        var actualSprite = row0.slice(0, 8);
+        var column1 = row0[1];  // (VX, VY), VX = column
+        // therefore begin drawing at row 0, column 1 (i.e. offset of 1)
+        var expectedSprite = [1, 0, 1, 0, 1, 0, 1, 0];  // 0xAA in binary
+        var actualSprite = row0.slice(1, 9);
 
         actualSprite.should.eql(expectedSprite);
       });
@@ -304,7 +307,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if key of value VX is pressed', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
     describe('EXA1', function () {
@@ -316,7 +319,7 @@ describe('ChipJS', function () {
       });
       it('skips next instruction if key of value VX is not pressed', function () {
         var difference = finalProgramCounter - initialProgramCounter;
-        difference.should.equal(4);
+        difference.should.equal(4 - 2);
       });
     });
 
