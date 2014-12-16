@@ -17,19 +17,19 @@ describe('ChipJS', function () {
         chipJS.execute(0x00E0);
       });
       it('clears the screen', function () {
-        chipJS.display.should.beBlank;
+        chipJS.displayScreen().should.beBlank;
       });
     });
 
     describe('00EE', function () {
       beforeEach('execute opcode', function () {
         chipJS.programCounter = 0x400;
-        chipJS.subroutineStack = [0x200];
+        chipJS.stack = [0x200];
         chipJS.execute(0x00EE);
       });
       it('returns from a subroutine', function () {
         chipJS.programCounter.should.equal(0x200);
-        chipJS.subroutineStack.length.should.equal(0);
+        chipJS.stack.length.should.equal(0);
       });
     });
 
@@ -62,7 +62,7 @@ describe('ChipJS', function () {
       });
       it('executes subroutine at 0xNNN', function () {
         chipJS.programCounter.should.equal(0x400);
-        chipJS.subroutineStack.length.should.equal(1);
+        chipJS.stack.length.should.equal(1);
       });
     });
 
@@ -285,13 +285,14 @@ describe('ChipJS', function () {
         chipJS.execute(0xD011);
       });
       it ('draws a sprite to coords (VX, VY) 8 wide, N tall, at I', function () {
-        var row0 = chipJS.display[0];  // (_, VY), VY = row
+        var row0 = chipJS.displayScreen()[0];  // (_, VY), VY = row
         var column0 = row0[0];  // (VX, VY), VX = column
         // therefore begin drawing at row 0, column 0
         var expectedSprite = [1, 1, 1, 1, 1, 1, 1, 1];  // 0xFF in binary
         var actualSprite = row0.slice(0, 8);
 
-        actualSprite.should.equal(expectedSprite);
+        console.log(_und.difference(actualSprite, expectedSprite));
+        actualSprite.should.eql(expectedSprite);
       });
     });
 
@@ -380,7 +381,7 @@ describe('ChipJS', function () {
         chipJS.execute(0xF029);
       });
       it('sets I to starting address of font data for digit # equal to value of VX', function () {
-        chipJS.i.should.equal(0x050);
+        chipJS.i.should.equal(0x04B);  // F is located at [75:79]
       });
     });
     describe('FX33', function () {

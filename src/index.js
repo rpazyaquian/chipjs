@@ -3,7 +3,7 @@ var _und = require('underscore');
 var ChipJS = function() {
   this.ram = new Uint8Array(4096);
   this.registers = new Uint8Array(16);
-  this.stack = new Uint16Array(16);  // addresses are 16-bit
+  this.stack = [];  // addresses are 16-bit
 
   this.i = 0x000;
   this.programCounter = 0x200;
@@ -19,6 +19,54 @@ var ChipJS = function() {
   };
 
   this.display = this.newDisplay();
+
+  this.displayScreen = function() {
+    // create a 2d array from an array of uint8arrays
+    // first, figure out how to change a byte
+    // to an 8-long array of 0s and 1s
+
+    var display = this.display;
+    var displayScreen = [];
+
+    for (var i = 0, displayLength = display.length; i < displayLength; i++) {
+      var row = display[i];
+      var displayRow = [];
+
+      for (var j = 0, rowLength = row.length; j < rowLength; j++) {
+        var displayByte = row[j];
+        var bytePixels = this.byteToPixels(displayByte);
+        displayRow.push(bytePixels);
+      }
+
+      displayScreen.push(_und.flatten(displayRow));
+
+    }
+
+    return displayScreen;
+  };
+
+  this.byteToPixels = function(displayByte) {
+    var masks = [
+      0x80,
+      0x40,
+      0x20,
+      0x10,
+      0x08,
+      0x04,
+      0x02,
+      0x01
+    ];
+
+    var byteInPixels = _und.map(masks, function(mask) {
+      if (displayByte & mask) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    return byteInPixels;
+  }
 
   this.fonts = function() {
     var ram = this.ram;
@@ -170,6 +218,8 @@ var ChipJS = function() {
 
   this.writeToDisplay = function(row, column, offset, spriteData) {
 
+    var self = this;
+
     var leftDidUnset;
     var rightDidUnset;
 
@@ -190,10 +240,18 @@ var ChipJS = function() {
         var newRightDisplayData = self.display[row][offsetColumn];
         rightDidUnset = rightDisplayData & newRightDisplayData;
       }
+    } else {
+
+      // just do the left sprite data
+
+      var leftSpriteData = spriteData >> offset;
+      var leftDisplayData = self.display[row][column];
+      self.display[row][column] = self.display[row][column] ^ leftSpriteData;
+      var newLeftDisplayData = self.display[row][column];
+      leftDidUnset = leftDisplayData & newLeftDisplayData;
     }
 
     return (leftDidUnset | rightDidUnset);
-
   };
 
   // opcode functions
@@ -227,6 +285,7 @@ var ChipJS = function() {
     // pushes current location onto subroutine stack
     // and jumps to specified address
     this.stack.push(this.programCounter);
+    this.programCounter = opcode.address;
   };
   this.skipIfVXEqual = function(opcode) {
     // skip the next instruction (i.e. incrememnt PC by 2)
@@ -404,8 +463,8 @@ var ChipJS = function() {
     // starting at the address stored in I
     // Set VF to 01 if any set pixels
     // are changed to unset, and 00 otherwise
-    var x = opcode.digits[1];
-    var y = opcode.digits[2];
+    var x = self.registers[opcode.digits[1]];
+    var y = self.registers[opcode.digits[2]];
     var n = opcode.digits[3];
 
     var column = Math.floor(x/8);
@@ -414,41 +473,11 @@ var ChipJS = function() {
     for (var i = 0; i < n; i++) {
       var row = y+i;
       var spriteData = self.ram[self.i];
-      var pixelsDidUnset = writeToDisplay(row, column, offset, spriteData);
+      var pixelsDidUnset = self.writeToDisplay(row, column, offset, spriteData);
       if ((self.registers[15] == 0x00) & pixelsDidUnset) {
         self.registers[15] == 0x01;
       }
     }
-
-    var writeToDisplay = function(row, column, offset, spriteData) {
-
-      var leftDidUnset = 0;
-      var rightDidUnset = 0;
-
-      if (offset > 0) {
-
-        var leftSpriteData = spriteData >> offset;
-        var leftDisplayData = self.display[row][column];
-        self.display[row][column] = self.display[row][column] ^ leftSpriteData;
-        var newLeftDisplayData = self.display[row][column];
-        leftDidUnset = leftDisplayData & newLeftDisplayData;
-
-        if (column != 7) {
-          var offsetColumn = column + 1;
-
-          var rightSpriteData = ((spriteData << (8 - offset)) & 0xFF);
-          var rightDisplayData = self.display[row][offsetColumn];
-          self.display[row][offsetColumn] = self.display[row][offsetColumn] ^ rightSpriteData;
-          var newRightDisplayData = self.display[row][offsetColumn];
-          rightDidUnset = rightDisplayData & newRightDisplayData;
-        }
-      }
-
-      if (leftDidUnset | rightDidUnset) {
-        self.registers[15] = 0x01;
-      };
-
-    };
 
   };
   this.skipIfKeyPressed = function(opcode) {
@@ -503,7 +532,8 @@ var ChipJS = function() {
     // stored in register VX
 
     var x = opcode.digits[1];
-    this.i = this.fontLocation(x);
+    var digit = this.registers[x];
+    this.i = this.fontLocation(digit);
   };
   this.storeBCDOfVx = function(opcode) {
     // Store the binary-coded decimal equivalent
