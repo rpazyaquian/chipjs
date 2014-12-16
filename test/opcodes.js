@@ -291,7 +291,6 @@ describe('ChipJS', function () {
         var expectedSprite = [1, 1, 1, 1, 1, 1, 1, 1];  // 0xFF in binary
         var actualSprite = row0.slice(0, 8);
 
-        console.log(_und.difference(actualSprite, expectedSprite));
         actualSprite.should.eql(expectedSprite);
       });
     });
@@ -334,8 +333,10 @@ describe('ChipJS', function () {
     });
     describe('FX0A', function () {
       beforeEach('execute opcode', function () {
+        chipJS.registers[0] = 0xF;
         chipJS.execute(0xF00A);
         chipJS.pressKey(0xF);
+        chipJS.execute(0xF00A);
       });
       it('waits for keypress and stores result in VX', function () {
         chipJS.registers[0].should.equal(0xF);

@@ -10,6 +10,87 @@ var ChipJS = function() {
   this.soundTimer = 0x00;
   this.delayTimer = 0x00;
 
+  // at the end of the tick, the current state is
+  // set to the previous state.
+  // we can use the "previous" state
+  // to calculate what keys have changed
+  this.keyStates = {
+    0x0: false,
+    0x1: false,
+    0x2: false,
+    0x3: false,
+    0x4: false,
+    0x5: false,
+    0x6: false,
+    0x7: false,
+    0x8: false,
+    0x9: false,
+    0xA: false,
+    0xB: false,
+    0xC: false,
+    0xD: false,
+    0xE: false,
+    0xF: false,
+    previous: {
+      0x0: false,
+      0x1: false,
+      0x2: false,
+      0x3: false,
+      0x4: false,
+      0x5: false,
+      0x6: false,
+      0x7: false,
+      0x8: false,
+      0x9: false,
+      0xA: false,
+      0xB: false,
+      0xC: false,
+      0xD: false,
+      0xE: false,
+      0xF: false,
+    }
+  };
+
+  this.keyWasPressed = function() {
+    // find the difference between this.keyStates
+    // and this.keyStates.previous
+
+    var self = this;
+
+    var status = false;
+    var pressedKey = 0;
+
+    var keys = _und.range(0, 16);
+
+    _und.each(keys, function(key) {
+      // if previous is false, and current is true
+      if (self.keyStates[key] & !(self.keyStates.previous[key])) {
+        status = true;
+        pressedKey = key;
+      };
+    });
+
+    // console.log(self.keyStates[15]);
+    // console.log(self.keyStates.previous[15]);
+    return {
+      status: status,
+      key: pressedKey
+    };
+
+  }
+
+  this.pressKey = function(key) {
+    if (!this.keyStates[key]) {
+      this.keyStates[key] = true;
+    };
+  };
+
+  this.releaseKey = function(key) {
+    if (this.keyStates[key]) {
+      this.keyStates[key] = false;
+    };
+  };
+
   this.newDisplay = function() {
     var display = [];
     for (var i = 0; i < 32; i++) {
@@ -510,6 +591,31 @@ var ChipJS = function() {
     // Wait for a keypress and store the result
     // in register VX
     // TODO
+
+    var x = opcode.digits[1];
+
+    // check awaitingKeyPress state
+    // if not awaitingKeyPress,
+    //   set awaitingKeyPress to true
+    // if awaitingKeyPress,
+    //   check to see if a key has recently been
+    //   pressed
+    //   (must know state of last )
+
+    if (this.awaitingKeyPress) {
+      var pressedKeyState = this.keyWasPressed();
+      console.log(pressedKeyState);
+      if (pressedKeyState.status) {
+        this.awaitingKeyPress = false;
+        this.registers[x] = pressedKeyState.key;
+      }
+    } else {
+      this.awaitingKeyPress = true;
+      // awaitingKeyPress is used to check if the
+      // PC should increment by two
+      // during a tick
+    }
+
   };
   this.setDelayTimerToVX = function(opcode) {
     // Set the delay timer to the value of register VX
