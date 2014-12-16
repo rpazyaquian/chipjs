@@ -2,23 +2,30 @@
 
 var React = require('react');
 
+var Registers = require('./subcomponents/registers.jsx');
+var AddressRegister = require('./subcomponents/addressRegister.jsx');
+var SoundTimer = require('./subcomponents/soundTimer.jsx');
+var DelayTimer = require('./subcomponents/delayTimer.jsx');
+var Memory = require('./subcomponents/memory.jsx');
+var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
+
+
 var ChipDisplay = React.createClass({
   render: function() {
     return (
-      <div>
+      <div className="chip-display">
         <h1>What goes in a ChipJS?</h1>
-        <ul>
-          <li>16 8-bit registers V0-VF</li>
-          <li>1 16-bit address register I</li>
-          <li>sound timer</li>
-          <li>display timer</li>
-          <li>4096 array ram</li>
-          <li>16-level subroutine stack</li>
-          <li>maybe key states?</li>
-        </ul>
+        <Registers registers={this.props.chipJS.registers} />
+        <AddressRegister addressRegister={this.props.chipJS.i} />
+        <SoundTimer soundTimer={this.props.chipJS.soundTimer} />
+        <DelayTimer delayTimer={this.props.chipJS.delayTimer} />
+        <SubroutineStack stack={this.props.chipJS.stack} />
       </div>
     );
   }
 });
 
 module.exports = ChipDisplay;
+
+// currently off: RAM display. it's a LOT to render!
+// <Memory ram={this.props.chipJS.ram} />

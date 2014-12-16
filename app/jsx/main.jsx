@@ -7,8 +7,10 @@ var ChipDisplay = require('./chipDisplay.jsx');
 
 var chipJS = new ChipJS();
 
-React.render(
-  <ChipDisplay />,
+console.log(chipJS.stack);
+
+var component = React.render(
+  <ChipDisplay chipJS={chipJS} />,
   document.getElementById('react-app')
 );
 
@@ -66,5 +68,6 @@ chipJS.loadProgram(maze);
 var runChipJS = setInterval(function() {
   chipJS.tick();
   drawScreen();
+  component.forceUpdate();
 }, 1);
 
