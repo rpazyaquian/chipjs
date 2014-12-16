@@ -68,10 +68,10 @@ describe('ChipJS', function () {
 
     describe('3XNN', function () {
       beforeEach('execute opcode', function () {
-        var initialProgramCounter = chipJS.programCounter;
+        initialProgramCounter = chipJS.programCounter;
         chipJS.registers[0] = 0x00;
         chipJS.execute(0x3000);
-        var finalProgramCounter = chipJS.programCounter;
+        finalProgramCounter = chipJS.programCounter;
       });
       it('skips next instruction if VX equals 0xNN', function () {
         var difference = finalProgramCounter - initialProgramCounter;

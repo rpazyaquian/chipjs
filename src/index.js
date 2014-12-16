@@ -49,11 +49,15 @@ var ChipJS = function() {
   this.fonts();
 
   // utility functions
+
   this.fontLocation = function(digit) {
     return digit * 5;
-  }
+  };
 
   this.execute = function(command) {
+
+    this.programCounter += 2;
+
     var opcode = this.getOpcode(command);
     this.matchOpcode(opcode);
   };
@@ -514,7 +518,7 @@ var ChipJS = function() {
     var onesAddress = this.i + 2;
 
     var hundreds = Math.floor(value / 100);
-    var tens = Math.floor(value / 100) % 10;
+    var tens = Math.floor(value / 10) % 10;
     var ones = (value % 10);
 
     this.ram[hundredsAddress] = hundreds;
