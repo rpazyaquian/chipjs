@@ -395,6 +395,9 @@ td, th {
   a box the size of a register box.
 
 */
+.address-register, .sound-timer, .delay-timer {
+  display: inline-block; }
+
 /*
 
   describe my subroutine stack section:
@@ -404,3 +407,5 @@ td, th {
   in the subroutine items.
 
 */
+.all-registers, .subroutine-stack {
+  display: inline-block; }

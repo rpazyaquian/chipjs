@@ -1,0 +1,7 @@
+@import "components/address-register";
+@import "components/sound-timer";
+@import "components/delay-timer";
+
+.address-register, .sound-timer, .delay-timer {
+  display: inline-block;
+}

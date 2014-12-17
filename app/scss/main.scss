@@ -4,8 +4,9 @@
 
 /* components */
 
-@import "components/registers-array";
-@import "components/address-register";
-@import "components/sound-timer";
-@import "components/delay-timer";
+@import "all-registers";
 @import "components/subroutine-stack";
+
+.all-registers, .subroutine-stack {
+  display: inline-block;
+}
