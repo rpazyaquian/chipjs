@@ -13,13 +13,15 @@ var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
 var ChipDisplay = React.createClass({
   render: function() {
     return (
-      <div className="chip-display">
+      <div>
         <h1>What goes in a ChipJS?</h1>
-        <Registers registers={this.props.chipJS.registers} />
-        <AddressRegister addressRegister={this.props.chipJS.i} />
-        <SoundTimer soundTimer={this.props.chipJS.soundTimer} />
-        <DelayTimer delayTimer={this.props.chipJS.delayTimer} />
-        <SubroutineStack stack={this.props.chipJS.stack} />
+        <div className="chip-display">
+          <Registers registers={this.props.chipJS.registers} />
+          <AddressRegister addressRegister={this.props.chipJS.i} />
+          <SoundTimer soundTimer={this.props.chipJS.soundTimer} />
+          <DelayTimer delayTimer={this.props.chipJS.delayTimer} />
+          <SubroutineStack stack={this.props.chipJS.stack} />
+        </div>
       </div>
     );
   }

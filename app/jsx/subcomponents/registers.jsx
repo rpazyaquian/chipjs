@@ -24,7 +24,7 @@ var Registers = React.createClass({
     });
 
     return (
-      <div className="registers">
+      <div className="registers-array">
         <h3>Registers</h3>
         <ul className="register-list">
           {registers}

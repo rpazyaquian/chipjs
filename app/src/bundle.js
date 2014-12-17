@@ -89,13 +89,15 @@ var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
 var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
   render: function() {
     return (
-      React.createElement("div", {className: "chip-display"}, 
+      React.createElement("div", null, 
         React.createElement("h1", null, "What goes in a ChipJS?"), 
-        React.createElement(Registers, {registers: this.props.chipJS.registers}), 
-        React.createElement(AddressRegister, {addressRegister: this.props.chipJS.i}), 
-        React.createElement(SoundTimer, {soundTimer: this.props.chipJS.soundTimer}), 
-        React.createElement(DelayTimer, {delayTimer: this.props.chipJS.delayTimer}), 
-        React.createElement(SubroutineStack, {stack: this.props.chipJS.stack})
+        React.createElement("div", {className: "chip-display"}, 
+          React.createElement(Registers, {registers: this.props.chipJS.registers}), 
+          React.createElement(AddressRegister, {addressRegister: this.props.chipJS.i}), 
+          React.createElement(SoundTimer, {soundTimer: this.props.chipJS.soundTimer}), 
+          React.createElement(DelayTimer, {delayTimer: this.props.chipJS.delayTimer}), 
+          React.createElement(SubroutineStack, {stack: this.props.chipJS.stack})
+        )
       )
     );
   }
@@ -112,9 +114,21 @@ var React = require('react');
 
 var AddressRegister = React.createClass({displayName: 'AddressRegister',
   render: function() {
+
+    var address = this.props.addressRegister.toString(16).toUpperCase();
+
+    if (this.props.addressRegister < 0x100) {
+      address = "0"+address;
+
+      if (this.props.addressRegister < 0x10) {
+        address = "0"+address;
+      }
+
+    }
+
     return (
       React.createElement("div", {className: "address-register"}, 
-        React.createElement("p", null, "Address Register: ", this.props.addressRegister)
+        React.createElement("p", null, "Address Register: 0x", address)
       )
     );
   }
@@ -128,9 +142,16 @@ var React = require('react');
 
 var DelayTimer = React.createClass({displayName: 'DelayTimer',
   render: function() {
+
+    var value = this.props.delayTimer.toString(16).toUpperCase();
+
+    if (this.props.delayTimer < 0x10) {
+      value = "0"+value;
+    }
+
     return (
       React.createElement("div", {className: "delay-timer"}, 
-        React.createElement("p", null, "Delay Timer: ", this.props.delayTimer)
+        React.createElement("p", null, "Delay Timer: 0x", value)
       )
     );
   }
@@ -173,9 +194,23 @@ var _und = require('underscore');
 
 var Register = React.createClass({displayName: 'Register',
   render: function() {
+
+    var index = this.props.registerIndex.toString(16).toUpperCase();
+
+    var value = this.props.register.toString(16).toUpperCase();
+
+    if (this.props.register < 0x10) {
+      value = "0"+value;
+    }
+
     return (
       React.createElement("div", {className: "register"}, 
-        "V", this.props.registerIndex, ": ", this.props.register
+        React.createElement("div", {className: "register-label"}, 
+          "V", index
+        ), 
+        React.createElement("div", {className: "register-value"}, 
+          "0x", value
+        )
       )
     );
   }
@@ -209,7 +244,7 @@ var Registers = React.createClass({displayName: 'Registers',
     });
 
     return (
-      React.createElement("div", {className: "registers"}, 
+      React.createElement("div", {className: "registers-array"}, 
         React.createElement("h3", null, "Registers"), 
         React.createElement("ul", {className: "register-list"}, 
           registers
@@ -227,9 +262,16 @@ var React = require('react');
 
 var SoundTimer = React.createClass({displayName: 'SoundTimer',
   render: function() {
+
+    var value = this.props.soundTimer.toString(16).toUpperCase();
+
+    if (this.props.soundTimer < 0x10) {
+      value = "0"+value;
+    }
+
     return (
       React.createElement("div", {className: "sound-timer"}, 
-        React.createElement("p", null, "Sound Timer: ", this.props.soundTimer)
+        React.createElement("p", null, "Sound Timer: 0x", value)
       )
     );
   }
@@ -245,9 +287,21 @@ var _und = require('underscore');
 
 var Subroutine = React.createClass({displayName: 'Subroutine',
   render: function() {
+
+    var address = this.props.subroutine.toString(16).toUpperCase();
+
+    if (this.props.subroutine < 0x100) {
+      address = "0"+address;
+
+      if (this.props.subroutine < 0x10) {
+        address = "0"+address;
+      }
+
+    }
+
     return (
       React.createElement("div", {className: "subroutine"}, 
-        "Subroutine ", this.props.subroutineIndex, ": ", this.props.subroutine
+        "Subroutine ", this.props.subroutineIndex, ": 0x", address
       )
     );
   }
