@@ -12,7 +12,19 @@ var gutil = require('gulp-util');
 // react
 var reactify = require('reactify');
 
+// sass
+var sass = require('gulp-sass');
 
+gulp.task('sass', function() {
+  return gulp.src('./app/scss/main.scss')
+    .pipe(sass())
+    .pipe(gulp.dest('./app/css'))
+    .pipe(gulp.dest('./build/css'));
+});
+
+gulp.task('sass-watch', function() {
+  gulp.watch('./app/scss/**/*.scss', ['sass']);
+});
 
 gulp.task('react-watch', function() {
   var bundler = watchify(browserify('./app/jsx/main.jsx', watchify.args)
@@ -31,3 +43,5 @@ gulp.task('react-watch', function() {
 
   return rebundle();
 });
+
+gulp.task('default',['react-watch', 'sass-watch']);

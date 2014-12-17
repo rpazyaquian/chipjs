@@ -1,0 +1,26 @@
+/*
+
+  describe my registers section:
+
+  a 4x4 array of boxes with VN in them.
+
+*/
+
+.registers-array {
+}
+
+.register-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.register-item {
+  display: inline-block;
+  width: 21%;  /* there's supposed to be 4 to a row */
+  margin: 10px 2%;
+  box-sizing: border-box;
+}
+
+.register-label, .register-value {
+  text-align: center;
+}

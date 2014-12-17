@@ -1,0 +1,28 @@
+/*
+
+  first off, some content styling
+
+*/
+
+.chipjs {
+  margin: auto 100px;
+}
+
+/*
+
+  okay, so i want to make my top-level
+  machine display into a big ol' box
+
+  then add boxes around each individual subcomponent
+
+  then add boxes around each V and each Subroutine
+
+*/
+
+.chip-display, .registers-array, .address-register,
+.sound-timer, .delay-timer, .subroutine-stack,
+.register-item, .subroutine-item {
+  border: 1px solid black;
+  margin: 10px 10px;
+  padding: 10px 10px;
+}
