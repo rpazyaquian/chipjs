@@ -202,16 +202,16 @@ var Registers = React.createClass({displayName: 'Registers',
       registerIndex += 1;
 
       return (
-        React.createElement("li", {key: register.id}, 
+        React.createElement("li", {className: "register-item", key: register.id}, 
           React.createElement(Register, {register: register, registerIndex: registerIndex})
         )
       );
     });
 
     return (
-      React.createElement("div", null, 
+      React.createElement("div", {className: "registers"}, 
         React.createElement("h3", null, "Registers"), 
-        React.createElement("ul", null, 
+        React.createElement("ul", {className: "register-list"}, 
           registers
         )
       )
