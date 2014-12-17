@@ -395,12 +395,15 @@ td, th {
   a box the size of a register box.
 
 */
-.sound-timer, .delay-timer {
-  display: inline-block; }
-
-.address-register, .timers {
+.address-register {
   display: inline-block;
   width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%; }
+
+.sound-timer, .delay-timer {
+  display: inline-block;
+  width: 21%;
   box-sizing: border-box;
   margin: 10px 2%; }
 
@@ -414,4 +417,7 @@ td, th {
 
 */
 .all-registers, .subroutine-stack {
-  display: inline-block; }
+  display: inline-block;
+  width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%; }

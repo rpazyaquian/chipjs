@@ -9,4 +9,7 @@
 
 .all-registers, .subroutine-stack {
   display: inline-block;
+  width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%;
 }
