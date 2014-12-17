@@ -73,7 +73,36 @@ var runChipJS = setInterval(function() {
 }, 1);
 
 
-},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx":[function(require,module,exports){
+},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx":[function(require,module,exports){
+/** @jsx React.DOM */
+
+var React = require('react');
+
+var Registers = require('./subcomponents/registers.jsx');
+
+var SubRegisters = require('./subRegisters.jsx');
+
+var AllRegisters = React.createClass({displayName: 'AllRegisters',
+  render: function() {
+
+    return (
+      React.createElement("div", {className: "all-registers"}, 
+        React.createElement(Registers, {
+          registers: this.props.registers}
+        ), 
+        React.createElement(SubRegisters, {
+          addressRegister: this.props.addressRegister, 
+          soundTimer: this.props.soundTimer, 
+          delayTimer: this.props.delayTimer}
+        )
+      )
+    );
+
+  }
+});
+
+module.exports = AllRegisters;
+},{"./subRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx","./subcomponents/registers.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/registers.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -82,8 +111,10 @@ var Registers = require('./subcomponents/registers.jsx');
 var AddressRegister = require('./subcomponents/addressRegister.jsx');
 var SoundTimer = require('./subcomponents/soundTimer.jsx');
 var DelayTimer = require('./subcomponents/delayTimer.jsx');
-var Memory = require('./subcomponents/memory.jsx');
+// var Memory = require('./subcomponents/memory.jsx');
 var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
+
+var AllRegisters = require('./allRegisters.jsx');
 
 
 var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
@@ -92,11 +123,15 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
       React.createElement("div", null, 
         React.createElement("h1", null, "What goes in a ChipJS?"), 
         React.createElement("div", {className: "chip-display"}, 
-          React.createElement(Registers, {registers: this.props.chipJS.registers}), 
-          React.createElement(AddressRegister, {addressRegister: this.props.chipJS.i}), 
-          React.createElement(SoundTimer, {soundTimer: this.props.chipJS.soundTimer}), 
-          React.createElement(DelayTimer, {delayTimer: this.props.chipJS.delayTimer}), 
-          React.createElement(SubroutineStack, {stack: this.props.chipJS.stack})
+          React.createElement(AllRegisters, {
+            registers: this.props.chipJS.registers, 
+            addressRegister: this.props.chipJS.i, 
+            soundTimer: this.props.chipJS.soundTimer, 
+            delayTimer: this.props.chipJS.delayTimer}
+            ), 
+          React.createElement(SubroutineStack, {
+            stack: this.props.chipJS.stack}
+          )
         )
       )
     );
@@ -107,7 +142,35 @@ module.exports = ChipDisplay;
 
 // currently off: RAM display. it's a LOT to render!
 // <Memory ram={this.props.chipJS.ram} />
-},{"./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/memory.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/memory.jsx","./subcomponents/registers.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/registers.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx":[function(require,module,exports){
+},{"./allRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx","./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/registers.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/registers.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx":[function(require,module,exports){
+/** @jsx React.DOM */
+
+var React = require('react');
+
+var AddressRegister = require('./subcomponents/addressRegister.jsx');
+var SoundTimer = require('./subcomponents/soundTimer.jsx');
+var DelayTimer = require('./subcomponents/delayTimer.jsx');
+
+var SubRegisters = React.createClass({displayName: 'SubRegisters',
+  render: function() {
+    return (
+      React.createElement("div", {className: "sub-registers"}, 
+        React.createElement(AddressRegister, {
+          addressRegister: this.props.addressRegister}
+        ), 
+        React.createElement(DelayTimer, {
+          delayTimer: this.props.delayTimer}
+        ), 
+        React.createElement(SoundTimer, {
+          soundTimer: this.props.soundTimer}
+        )
+      )
+    );
+  }
+});
+
+module.exports = SubRegisters;
+},{"./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -158,34 +221,7 @@ var DelayTimer = React.createClass({displayName: 'DelayTimer',
 });
 
 module.exports = DelayTimer;
-},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/memory.jsx":[function(require,module,exports){
-/** @jsx React.DOM */
-
-var React = require('react');
-
-var _und = require('underscore');
-
-var Memory = React.createClass({displayName: 'Memory',
-  render: function() {
-
-    console.log(this.props.ram.values());
-
-    var bytes = _und.map(this.props.ram, function(ramByte) {
-      return React.createElement("li", null, ramByte);
-    });
-
-    return (
-      React.createElement("div", null, 
-        React.createElement("ul", null, 
-          bytes
-        )
-      )
-    );
-  }
-});
-
-module.exports = Memory;
-},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js","underscore":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/underscore/underscore.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/register.jsx":[function(require,module,exports){
+},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/register.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
