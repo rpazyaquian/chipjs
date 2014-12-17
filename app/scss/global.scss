@@ -21,7 +21,8 @@
 
 .chip-display, .registers-array, .address-register,
 .sound-timer, .delay-timer, .subroutine-stack,
-.register-item, .subroutine-item {
+.register-item, .subroutine-item,
+.all-registers, .sub-registers, .timers {
   border: 1px solid black;
   margin: 10px 10px;
   padding: 10px 10px;

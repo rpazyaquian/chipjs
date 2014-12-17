@@ -151,6 +151,8 @@ var AddressRegister = require('./subcomponents/addressRegister.jsx');
 var SoundTimer = require('./subcomponents/soundTimer.jsx');
 var DelayTimer = require('./subcomponents/delayTimer.jsx');
 
+var Timers = require('./timers.jsx');
+
 var SubRegisters = React.createClass({displayName: 'SubRegisters',
   render: function() {
     return (
@@ -158,10 +160,8 @@ var SubRegisters = React.createClass({displayName: 'SubRegisters',
         React.createElement(AddressRegister, {
           addressRegister: this.props.addressRegister}
         ), 
-        React.createElement(DelayTimer, {
-          delayTimer: this.props.delayTimer}
-        ), 
-        React.createElement(SoundTimer, {
+        React.createElement(Timers, {
+          delayTimer: this.props.delayTimer, 
           soundTimer: this.props.soundTimer}
         )
       )
@@ -170,7 +170,7 @@ var SubRegisters = React.createClass({displayName: 'SubRegisters',
 });
 
 module.exports = SubRegisters;
-},{"./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx":[function(require,module,exports){
+},{"./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","./timers.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/timers.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -383,7 +383,31 @@ var SubroutineStack = React.createClass({displayName: 'SubroutineStack',
 });
 
 module.exports = SubroutineStack;
-},{"./subroutine.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutine.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js","underscore":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/underscore/underscore.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{"./subroutine.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutine.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js","underscore":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/underscore/underscore.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/timers.jsx":[function(require,module,exports){
+/** @jsx React.DOM */
+
+var React = require('react');
+
+var SoundTimer = require('./subcomponents/soundTimer.jsx');
+var DelayTimer = require('./subcomponents/delayTimer.jsx');
+
+var Timers = React.createClass({displayName: 'Timers',
+  render: function() {
+    return (
+      React.createElement("div", {className: "timers"}, 
+        React.createElement(DelayTimer, {
+          delayTimer: this.props.delayTimer}
+        ), 
+        React.createElement(SoundTimer, {
+          soundTimer: this.props.soundTimer}
+        )
+      )
+    );
+  }
+});
+
+module.exports = Timers;
+},{"./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};

@@ -1,7 +1,9 @@
 @import "components/address-register";
-@import "components/sound-timer";
-@import "components/delay-timer";
+@import "timers";
 
-.address-register, .sound-timer, .delay-timer {
+.address-register, .timers {
   display: inline-block;
+  width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%;
 }

@@ -339,7 +339,7 @@ td, th {
   then add boxes around each V and each Subroutine
 
 */
-.chip-display, .registers-array, .address-register, .sound-timer, .delay-timer, .subroutine-stack, .register-item, .subroutine-item {
+.chip-display, .registers-array, .address-register, .sound-timer, .delay-timer, .subroutine-stack, .register-item, .subroutine-item, .all-registers, .sub-registers, .timers {
   border: 1px solid black;
   margin: 10px 10px;
   padding: 10px 10px; }
@@ -395,8 +395,14 @@ td, th {
   a box the size of a register box.
 
 */
-.address-register, .sound-timer, .delay-timer {
+.sound-timer, .delay-timer {
   display: inline-block; }
+
+.address-register, .timers {
+  display: inline-block;
+  width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%; }
 
 /*
 
