@@ -89,7 +89,7 @@ var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
 var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
   render: function() {
     return (
-      React.createElement("div", null, 
+      React.createElement("div", {className: "chip-display"}, 
         React.createElement("h1", null, "What goes in a ChipJS?"), 
         React.createElement(Registers, {registers: this.props.chipJS.registers}), 
         React.createElement(AddressRegister, {addressRegister: this.props.chipJS.i}), 
@@ -103,7 +103,8 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
 
 module.exports = ChipDisplay;
 
-        // <Memory ram={this.props.chipJS.ram} />
+// currently off: RAM display. it's a LOT to render!
+// <Memory ram={this.props.chipJS.ram} />
 },{"./subcomponents/addressRegister.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx","./subcomponents/delayTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx","./subcomponents/memory.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/memory.jsx","./subcomponents/registers.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/registers.jsx","./subcomponents/soundTimer.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/soundTimer.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/addressRegister.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
