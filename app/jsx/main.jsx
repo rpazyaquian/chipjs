@@ -2,12 +2,11 @@
 
 var React = require('react');
 var ChipJS = require('chipjs');
+var $ = require('jquery');
 
 var ChipDisplay = require('./chipDisplay.jsx');
 
 var chipJS = new ChipJS();
-
-console.log(chipJS.stack);
 
 var component = React.render(
   <ChipDisplay chipJS={chipJS} />,
@@ -63,11 +62,34 @@ var maze = [
 // 544
 0x80, 0x10];
 
+var readProgram = function(event) {
+  var f = event.target.files[0];
+
+  console.log(f);
+
+  if (f) {
+    var r = new FileReader();
+
+    r.onload = (function(inputFile) {
+      return function(e) {
+
+        var program = new Uint8Array(e.target.result);
+        chipJS.loadProgram(program);
+        console.log(chipJS.ram);
+
+        var runChipJS = setInterval(function() {
+          chipJS.tick();
+          drawScreen();
+          component.forceUpdate();
+        }, 1);
+      };
+    })(f);
+
+    r.readAsArrayBuffer(f);
+  }
+};
+
+$('#input-program').on("change", readProgram);
+
+
 chipJS.loadProgram(maze);
-
-var runChipJS = setInterval(function() {
-  chipJS.tick();
-  drawScreen();
-  component.forceUpdate();
-}, 1);
-

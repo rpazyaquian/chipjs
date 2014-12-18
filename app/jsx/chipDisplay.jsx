@@ -2,13 +2,8 @@
 
 var React = require('react');
 
-var Registers = require('./subcomponents/registers.jsx');
-var AddressRegister = require('./subcomponents/addressRegister.jsx');
-var SoundTimer = require('./subcomponents/soundTimer.jsx');
-var DelayTimer = require('./subcomponents/delayTimer.jsx');
-// var Memory = require('./subcomponents/memory.jsx');
 var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
-
+var RAM = require('./subcomponents/ram.jsx');
 var AllRegisters = require('./allRegisters.jsx');
 
 
@@ -27,6 +22,7 @@ var ChipDisplay = React.createClass({
           <SubroutineStack
             stack={this.props.chipJS.stack}
           />
+          <RAM />
         </div>
       </div>
     );
