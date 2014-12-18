@@ -95,7 +95,8 @@ var ChipJS = function() {
   this.newDisplay = function() {
     var display = [];
     for (var i = 0; i < 32; i++) {
-      display[i] = new Uint8Array(8);
+      var buffer = new ArrayBuffer(8);
+      display[i] = new Uint8Array(buffer);
     }
     return display;
   };
