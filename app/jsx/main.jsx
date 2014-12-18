@@ -134,6 +134,8 @@ App.readProgram = function(event) {
 
 App.runChipJS = function () {
   var self = this;
+  self.chipJS.execute(0x00E0);
+  self.chipJS.programCounter = 0x200;
   self.intervalID = setInterval(function() {
     self.chipJS.tick();
     self.drawScreen();
