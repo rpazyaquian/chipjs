@@ -338,40 +338,42 @@ var ChipJS = function() {
 
   this.writeToDisplay = function(row, column, offset, spriteData) {
 
-    var self = this;
+    if (row < 32) {
+      var self = this;
 
-    var leftDidUnset;
-    var rightDidUnset;
+      var leftDidUnset;
+      var rightDidUnset;
 
-    if (offset > 0) {
+      if (offset > 0) {
 
-      var leftSpriteData = spriteData >> offset;
-      var leftDisplayData = self.display[row][column];
-      self.display[row][column] = self.display[row][column] ^ leftSpriteData;
-      var newLeftDisplayData = self.display[row][column];
-      leftDidUnset = leftDisplayData & newLeftDisplayData;
+        var leftSpriteData = spriteData >> offset;
+        var leftDisplayData = self.display[row][column];
+        self.display[row][column] = self.display[row][column] ^ leftSpriteData;
+        var newLeftDisplayData = self.display[row][column];
+        leftDidUnset = leftDisplayData & newLeftDisplayData;
 
-      if (column != 7) {
-        var offsetColumn = column + 1;
+        if (column != 7) {
+          var offsetColumn = column + 1;
 
-        var rightSpriteData = ((spriteData << (8 - offset)) & 0xFF);
-        var rightDisplayData = self.display[row][offsetColumn];
-        self.display[row][offsetColumn] = self.display[row][offsetColumn] ^ rightSpriteData;
-        var newRightDisplayData = self.display[row][offsetColumn];
-        rightDidUnset = rightDisplayData & newRightDisplayData;
+          var rightSpriteData = ((spriteData << (8 - offset)) & 0xFF);
+          var rightDisplayData = self.display[row][offsetColumn];
+          self.display[row][offsetColumn] = self.display[row][offsetColumn] ^ rightSpriteData;
+          var newRightDisplayData = self.display[row][offsetColumn];
+          rightDidUnset = rightDisplayData & newRightDisplayData;
+        }
+      } else {
+
+        // just do the left sprite data
+
+        var leftSpriteData = spriteData >> offset;
+        var leftDisplayData = self.display[row][column];
+        self.display[row][column] = self.display[row][column] ^ leftSpriteData;
+        var newLeftDisplayData = self.display[row][column];
+        leftDidUnset = leftDisplayData & newLeftDisplayData;
       }
-    } else {
 
-      // just do the left sprite data
-
-      var leftSpriteData = spriteData >> offset;
-      var leftDisplayData = self.display[row][column];
-      self.display[row][column] = self.display[row][column] ^ leftSpriteData;
-      var newLeftDisplayData = self.display[row][column];
-      leftDidUnset = leftDisplayData & newLeftDisplayData;
+      return (leftDidUnset | rightDidUnset);
     }
-
-    return (leftDidUnset | rightDidUnset);
   };
 
   // opcode functions
