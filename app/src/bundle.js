@@ -7,19 +7,33 @@ var $ = require('jquery');
 
 var ChipDisplay = require('./chipDisplay.jsx');
 
-var chipJS = new ChipJS();
+var App = {};
 
-var component = React.render(
-  React.createElement(ChipDisplay, {chipJS: chipJS}),
+App.chipJS = new ChipJS();
+
+App.component = React.render(
+  React.createElement(ChipDisplay, {chipJS: App.chipJS}),
   document.getElementById('react-app')
 );
 
-var drawScreen = function() {
+App.initScreen = function() {
+  var ctx = document.getElementById('chipjs-canvas').getContext('2d');
+
+  ctx.canvas.width = 640;
+  ctx.canvas.height = 320;
+}
+
+App.clearScreen= function() {
+  var ctx = document.getElementById('chipjs-canvas').getContext('2d');
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+App.drawScreen = function() {
   var ctx = document.getElementById('chipjs-canvas').getContext('2d');
 
   ctx.fillStyle = "rgb(0,0,0)";
 
-  var screenArray = chipJS.displayScreen();
+  var screenArray = App.chipJS.displayScreen();
 
   for (var i = 0, rows = screenArray.length; i < rows; i++) {
     var row = screenArray[i];
@@ -61,9 +75,45 @@ var maze = [
 // 540
 0x20, 0x10, 0x20, 0x40,
 // 544
-0x80, 0x10];
+0x80, 0x10
+];
 
-var readProgram = function(event) {
+var smile = [
+  0x12,
+  0x1A,
+  0x24,
+  0x24,
+  0x00,
+  0x81,
+  0x42,
+  0x3C,
+  0x62,
+  0x00,
+  0xC0,
+  0x3F,
+  0xC1,
+  0x1F,
+  0xD0,
+  0x16,
+  0x72,
+  0x01,
+  0x32,
+  0x20,
+  0x12,
+  0x0A,
+  0x00,
+  0xE0,
+  0x00,
+  0xEE,
+  0xA2,
+  0x02,
+  0x22,
+  0x08,
+  0x12,
+  0x1C
+];
+
+App.readProgram = function(event) {
   var f = event.target.files[0];
 
   console.log(f);
@@ -75,14 +125,7 @@ var readProgram = function(event) {
       return function(e) {
 
         var program = new Uint8Array(e.target.result);
-        chipJS.loadProgram(program);
-        console.log(chipJS.ram);
-
-        var runChipJS = setInterval(function() {
-          chipJS.tick();
-          drawScreen();
-          component.forceUpdate();
-        }, 1);
+        App.chipJS.loadProgram(program);
       };
     })(f);
 
@@ -90,10 +133,40 @@ var readProgram = function(event) {
   }
 };
 
-$('#input-program').on("change", readProgram);
+App.runChipJS = function () {
+  var self = this;
+  self.intervalID = setInterval(function() {
+    self.chipJS.tick();
+    self.drawScreen();
+    self.component.forceUpdate();
+  }, 1000/60);
+  self.running = true;
+};
 
+App.stopChipJS = function () {
+  var self = this;
+  clearInterval(self.intervalID);
+  self.intervalID = undefined;
+  self.running = false;
+  self.clearScreen();
+};
 
-chipJS.loadProgram(maze);
+App.toggleChipJS = function() {
+  var self = this;
+  if (!self.running) {
+    self.runChipJS();
+  } else {
+    self.stopChipJS();
+  }
+}
+
+$('#input-program').on("change", App.readProgram);
+
+$('#run-button').on("click", App.toggleChipJS.bind(App));
+
+App.chipJS.loadProgram(smile);
+
+App.initScreen();
 },{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","jquery":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/jquery/dist/jquery.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
@@ -129,7 +202,7 @@ module.exports = AllRegisters;
 var React = require('react');
 
 var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
-var ChipCanvas = require('./subcomponents/chipCanvas.jsx');
+var RAM = require('./subcomponents/ram.jsx');
 var AllRegisters = require('./allRegisters.jsx');
 
 
@@ -148,7 +221,9 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
           React.createElement(SubroutineStack, {
             stack: this.props.chipJS.stack}
           ), 
-          React.createElement(ChipCanvas, null)
+          React.createElement(RAM, {
+            ram: this.props.chipJS.ram}
+          )
         )
       )
     );
@@ -159,7 +234,7 @@ module.exports = ChipDisplay;
 
 // currently off: RAM display. it's a LOT to render!
 // <Memory ram={this.props.chipJS.ram} />
-},{"./allRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx","./subcomponents/chipCanvas.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/chipCanvas.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx":[function(require,module,exports){
+},{"./allRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx","./subcomponents/ram.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/ram.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -222,23 +297,6 @@ var AddressRegister = React.createClass({displayName: 'AddressRegister',
 });
 
 module.exports = AddressRegister;
-},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/chipCanvas.jsx":[function(require,module,exports){
-/** @jsx React.DOM */
-
-var React = require('react');
-
-var ChipCanvas = React.createClass({displayName: 'ChipCanvas',
-    render: function() {
-      return (
-        React.createElement("div", {className: "chip-canvas"}, 
-          React.createElement("canvas", {id: "chipjs-canvas"}), 
-          React.createElement("input", {type: "file", id: "input-program"})
-        )
-      );
-    }
-});
-
-module.exports = ChipCanvas;
 },{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/delayTimer.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
@@ -262,6 +320,36 @@ var DelayTimer = React.createClass({displayName: 'DelayTimer',
 });
 
 module.exports = DelayTimer;
+},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/ram.jsx":[function(require,module,exports){
+/** @jsx React.DOM */
+
+var React = require('react');
+
+var RAM = React.createClass({displayName: 'RAM',
+
+  drawRam: function() {
+    var ramArray = this.props.ram;
+
+    // console.log(ramArray);
+
+    // for each byte in the ram array
+
+  },
+
+  componentDidUpdate: function() {
+    this.drawRam();
+  },
+
+  render: function() {
+    return (
+      React.createElement("div", {className: "ram"}, 
+        React.createElement("canvas", {id: "ram-canvas"})
+      )
+    );
+  }
+});
+
+module.exports = RAM;
 },{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/register.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 

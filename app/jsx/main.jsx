@@ -6,19 +6,33 @@ var $ = require('jquery');
 
 var ChipDisplay = require('./chipDisplay.jsx');
 
-var chipJS = new ChipJS();
+var App = {};
 
-var component = React.render(
-  <ChipDisplay chipJS={chipJS} />,
+App.chipJS = new ChipJS();
+
+App.component = React.render(
+  <ChipDisplay chipJS={App.chipJS} />,
   document.getElementById('react-app')
 );
 
-var drawScreen = function() {
+App.initScreen = function() {
+  var ctx = document.getElementById('chipjs-canvas').getContext('2d');
+
+  ctx.canvas.width = 640;
+  ctx.canvas.height = 320;
+}
+
+App.clearScreen= function() {
+  var ctx = document.getElementById('chipjs-canvas').getContext('2d');
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+App.drawScreen = function() {
   var ctx = document.getElementById('chipjs-canvas').getContext('2d');
 
   ctx.fillStyle = "rgb(0,0,0)";
 
-  var screenArray = chipJS.displayScreen();
+  var screenArray = App.chipJS.displayScreen();
 
   for (var i = 0, rows = screenArray.length; i < rows; i++) {
     var row = screenArray[i];
@@ -60,9 +74,45 @@ var maze = [
 // 540
 0x20, 0x10, 0x20, 0x40,
 // 544
-0x80, 0x10];
+0x80, 0x10
+];
 
-var readProgram = function(event) {
+var smile = [
+  0x12,
+  0x1A,
+  0x24,
+  0x24,
+  0x00,
+  0x81,
+  0x42,
+  0x3C,
+  0x62,
+  0x00,
+  0xC0,
+  0x3F,
+  0xC1,
+  0x1F,
+  0xD0,
+  0x16,
+  0x72,
+  0x01,
+  0x32,
+  0x20,
+  0x12,
+  0x0A,
+  0x00,
+  0xE0,
+  0x00,
+  0xEE,
+  0xA2,
+  0x02,
+  0x22,
+  0x08,
+  0x12,
+  0x1C
+];
+
+App.readProgram = function(event) {
   var f = event.target.files[0];
 
   console.log(f);
@@ -74,14 +124,7 @@ var readProgram = function(event) {
       return function(e) {
 
         var program = new Uint8Array(e.target.result);
-        chipJS.loadProgram(program);
-        console.log(chipJS.ram);
-
-        var runChipJS = setInterval(function() {
-          chipJS.tick();
-          drawScreen();
-          component.forceUpdate();
-        }, 1);
+        App.chipJS.loadProgram(program);
       };
     })(f);
 
@@ -89,7 +132,37 @@ var readProgram = function(event) {
   }
 };
 
-$('#input-program').on("change", readProgram);
+App.runChipJS = function () {
+  var self = this;
+  self.intervalID = setInterval(function() {
+    self.chipJS.tick();
+    self.drawScreen();
+    self.component.forceUpdate();
+  }, 1000/60);
+  self.running = true;
+};
 
+App.stopChipJS = function () {
+  var self = this;
+  clearInterval(self.intervalID);
+  self.intervalID = undefined;
+  self.running = false;
+  self.clearScreen();
+};
 
-chipJS.loadProgram(maze);
+App.toggleChipJS = function() {
+  var self = this;
+  if (!self.running) {
+    self.runChipJS();
+  } else {
+    self.stopChipJS();
+  }
+}
+
+$('#input-program').on("change", App.readProgram);
+
+$('#run-button').on("click", App.toggleChipJS.bind(App));
+
+App.chipJS.loadProgram(smile);
+
+App.initScreen();

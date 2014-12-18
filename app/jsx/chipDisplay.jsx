@@ -22,7 +22,9 @@ var ChipDisplay = React.createClass({
           <SubroutineStack
             stack={this.props.chipJS.stack}
           />
-          <RAM />
+          <RAM
+            ram={this.props.chipJS.ram}
+          />
         </div>
       </div>
     );
