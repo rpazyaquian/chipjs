@@ -88,11 +88,12 @@ App.runChipJS = function () {
   var self = this;
   self.chipJS.execute(0x00E0);
   self.chipJS.programCounter = 0x200;
+  self.chipJS.i = 0x000;
   self.intervalID = setInterval(function() {
     self.chipJS.tick();
     self.drawScreen();
     self.component.forceUpdate();
-  }, 1000/60);
+  }, 1);
   self.running = true;
 };
 
@@ -113,10 +114,29 @@ App.toggleChipJS = function() {
   }
 }
 
+App.pressKey = function(event) {
+
+  // 1 2 3 4
+  // q w e r
+  // a s d f
+  // z x c v
+
+  // ------>
+
+  // 1 2 3 C
+  // 4 5 6 D
+  // 7 8 9 E
+  // A 0 B F
+
+}
+
 $('#input-program').on("change", App.readProgram);
 
 $('#run-button').on("click", App.toggleChipJS.bind(App));
 
-App.chipJS.loadProgram(stack);
+$('#chipjs-canvas').on("keydown", App.pressKey);
+$('#chipjs-canvas').on("keyup", App.releaseKey);
+
+App.chipJS.loadProgram(maze);
 
 App.initScreen();
