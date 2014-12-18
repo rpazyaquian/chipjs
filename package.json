@@ -1,6 +1,6 @@
 {
   "name": "chipjs",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "JavaScript implementation of a Chip8 interpreter.",
   "main": "src/index.js",
   "scripts": {
