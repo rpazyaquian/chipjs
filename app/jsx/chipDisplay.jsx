@@ -11,6 +11,10 @@ var ChipDisplay = React.createClass({
     return (
       <div>
         <h1>What goes in a ChipJS?</h1>
+        <div className='chip-canvas'>
+          <canvas id='chipjs-canvas'></canvas>
+          <button id="run-button">Run/Stop</button>
+        </div>
         <div className="chip-display">
           <AllRegisters
             registers={this.props.chipJS.registers}

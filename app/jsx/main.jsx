@@ -6,6 +6,8 @@ var $ = require('jquery');
 
 var ChipDisplay = require('./chipDisplay.jsx');
 
+var TestPrograms = require('./testPrograms.jsx');
+
 var App = {};
 
 App.chipJS = new ChipJS();
@@ -32,6 +34,8 @@ App.drawScreen = function() {
 
   ctx.fillStyle = "rgb(0,0,0)";
 
+  this.clearScreen();
+
   var screenArray = App.chipJS.displayScreen();
 
   for (var i = 0, rows = screenArray.length; i < rows; i++) {
@@ -55,62 +59,10 @@ App.drawScreen = function() {
 }
 
 
-// test program
-var maze = [
-// 512, 514, 516, 518
-0xa2, 0x1e, 0xc2, 0x01,
-// 516
-0x32, 0x01, 0xa2, 0x1a,
-// 520
-0xd0, 0x14, 0x70, 0x04,
-// 524
-0x30, 0x40, 0x12, 0x00,
-// 528
-0x60, 0x00, 0x71, 0x04,
-// 532
-0x31, 0x20, 0x12, 0x00,
-// 536
-0x12, 0x18, 0x80, 0x40,
-// 540
-0x20, 0x10, 0x20, 0x40,
-// 544
-0x80, 0x10
-];
-
-var smile = [
-  0x12,
-  0x1A,
-  0x24,
-  0x24,
-  0x00,
-  0x81,
-  0x42,
-  0x3C,
-  0x62,
-  0x00,
-  0xC0,
-  0x3F,
-  0xC1,
-  0x1F,
-  0xD0,
-  0x16,
-  0x72,
-  0x01,
-  0x32,
-  0x20,
-  0x12,
-  0x0A,
-  0x00,
-  0xE0,
-  0x00,
-  0xEE,
-  0xA2,
-  0x02,
-  0x22,
-  0x08,
-  0x12,
-  0x1C
-];
+// test programs
+var maze = TestPrograms.maze;
+var smile = TestPrograms.smile;
+var stack = TestPrograms.stack;
 
 App.readProgram = function(event) {
   var f = event.target.files[0];
@@ -165,6 +117,6 @@ $('#input-program').on("change", App.readProgram);
 
 $('#run-button').on("click", App.toggleChipJS.bind(App));
 
-App.chipJS.loadProgram(smile);
+App.chipJS.loadProgram(stack);
 
 App.initScreen();

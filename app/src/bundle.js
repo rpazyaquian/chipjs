@@ -7,6 +7,8 @@ var $ = require('jquery');
 
 var ChipDisplay = require('./chipDisplay.jsx');
 
+var TestPrograms = require('./testPrograms.jsx');
+
 var App = {};
 
 App.chipJS = new ChipJS();
@@ -33,6 +35,8 @@ App.drawScreen = function() {
 
   ctx.fillStyle = "rgb(0,0,0)";
 
+  this.clearScreen();
+
   var screenArray = App.chipJS.displayScreen();
 
   for (var i = 0, rows = screenArray.length; i < rows; i++) {
@@ -56,62 +60,10 @@ App.drawScreen = function() {
 }
 
 
-// test program
-var maze = [
-// 512, 514, 516, 518
-0xa2, 0x1e, 0xc2, 0x01,
-// 516
-0x32, 0x01, 0xa2, 0x1a,
-// 520
-0xd0, 0x14, 0x70, 0x04,
-// 524
-0x30, 0x40, 0x12, 0x00,
-// 528
-0x60, 0x00, 0x71, 0x04,
-// 532
-0x31, 0x20, 0x12, 0x00,
-// 536
-0x12, 0x18, 0x80, 0x40,
-// 540
-0x20, 0x10, 0x20, 0x40,
-// 544
-0x80, 0x10
-];
-
-var smile = [
-  0x12,
-  0x1A,
-  0x24,
-  0x24,
-  0x00,
-  0x81,
-  0x42,
-  0x3C,
-  0x62,
-  0x00,
-  0xC0,
-  0x3F,
-  0xC1,
-  0x1F,
-  0xD0,
-  0x16,
-  0x72,
-  0x01,
-  0x32,
-  0x20,
-  0x12,
-  0x0A,
-  0x00,
-  0xE0,
-  0x00,
-  0xEE,
-  0xA2,
-  0x02,
-  0x22,
-  0x08,
-  0x12,
-  0x1C
-];
+// test programs
+var maze = TestPrograms.maze;
+var smile = TestPrograms.smile;
+var stack = TestPrograms.stack;
 
 App.readProgram = function(event) {
   var f = event.target.files[0];
@@ -166,10 +118,10 @@ $('#input-program').on("change", App.readProgram);
 
 $('#run-button').on("click", App.toggleChipJS.bind(App));
 
-App.chipJS.loadProgram(smile);
+App.chipJS.loadProgram(stack);
 
 App.initScreen();
-},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","jquery":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/jquery/dist/jquery.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx":[function(require,module,exports){
+},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","./testPrograms.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/testPrograms.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","jquery":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/jquery/dist/jquery.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/allRegisters.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -212,6 +164,10 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
     return (
       React.createElement("div", null, 
         React.createElement("h1", null, "What goes in a ChipJS?"), 
+        React.createElement("div", {className: "chip-canvas"}, 
+          React.createElement("canvas", {id: "chipjs-canvas"}), 
+          React.createElement("button", {id: "run-button"}, "Run/Stop")
+        ), 
         React.createElement("div", {className: "chip-display"}, 
           React.createElement(AllRegisters, {
             registers: this.props.chipJS.registers, 
@@ -480,7 +436,168 @@ var SubroutineStack = React.createClass({displayName: 'SubroutineStack',
 });
 
 module.exports = SubroutineStack;
-},{"./subroutine.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutine.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js","underscore":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/underscore/underscore.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{"./subroutine.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutine.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js","underscore":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/underscore/underscore.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/testPrograms.jsx":[function(require,module,exports){
+/** @jsx React.DOM */
+
+var TestPrograms = {};
+
+TestPrograms.maze = [
+// 512, 514, 516, 518
+0xa2, 0x1e, 0xc2, 0x01,
+// 516
+0x32, 0x01, 0xa2, 0x1a,
+// 520
+0xd0, 0x14, 0x70, 0x04,
+// 524
+0x30, 0x40, 0x12, 0x00,
+// 528
+0x60, 0x00, 0x71, 0x04,
+// 532
+0x31, 0x20, 0x12, 0x00,
+// 536
+0x12, 0x18, 0x80, 0x40,
+// 540
+0x20, 0x10, 0x20, 0x40,
+// 544
+0x80, 0x10
+];
+
+TestPrograms.smile = [
+  0x12,
+  0x1A,
+  0x24,
+  0x24,
+  0x00,
+  0x81,
+  0x42,
+  0x3C,
+  0x62,
+  0x00,
+  0xC0,
+  0x3F,
+  0xC1,
+  0x1F,
+  0xD0,
+  0x16,
+  0x72,
+  0x01,
+  0x32,
+  0x20,
+  0x12,
+  0x0A,
+  0x00,
+  0xE0,
+  0x00,
+  0xEE,
+  0xA2,
+  0x02,
+  0x22,
+  0x08,
+  0x12,
+  0x1C
+];
+
+
+TestPrograms.stack = [0x12,
+0x3D,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0x00,
+0xA2,
+0x02,
+0x8F,
+0x00,
+0xF0,
+0x65,
+0xF0,
+0x1E,
+0x80,
+0xF0,
+0xF0,
+0x55,
+0xA2,
+0x02,
+0xF0,
+0x65,
+0x70,
+0x01,
+0xA2,
+0x02,
+0xF0,
+0x55,
+0x00,
+0xEE,
+0xA2,
+0x02,
+0xF0,
+0x65,
+0x70,
+0xFF,
+0x8F,
+0x00,
+0xA2,
+0x02,
+0xF0,
+0x55,
+0xFF,
+0x1E,
+0xF0,
+0x65,
+0x00,
+0xEE,
+0xF0,
+0x29,
+0xDA,
+0xB5,
+0x7A,
+0x06,
+0x00,
+0xEE,
+0x6A,
+0x03,
+0x6B,
+0x03,
+0x60,
+0x05,
+0x22,
+0x0B,
+0x60,
+0x03,
+0x22,
+0x0B,
+0x60,
+0x01,
+0x22,
+0x0B,
+0x22,
+0x23,
+0x22,
+0x35,
+0x60,
+0x09,
+0x22,
+0x0B,
+0x22,
+0x23,
+0x22,
+0x35,
+0x22,
+0x23,
+0x22,
+0x35,
+0x22,
+0x23,
+0x22,
+0x35]
+
+module.exports = TestPrograms;
+},{}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -666,7 +783,8 @@ var ChipJS = function() {
   this.newDisplay = function() {
     var display = [];
     for (var i = 0; i < 32; i++) {
-      display[i] = new Uint8Array(8);
+      // no more uint arrays. seriously.
+      display[i] = [0, 0, 0, 0, 0, 0, 0, 0]; // 8 uints
     }
     return display;
   };
