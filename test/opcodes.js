@@ -14,6 +14,9 @@ describe('ChipJS', function () {
 
     describe('00E0', function () {
       beforeEach('execute opcode', function () {
+        for (var i = 0; i < 32; i++) {
+          chipJS.display[i] = [255, 255, 255, 255, 255, 255, 255, 255];
+        }
         chipJS.execute(0x00E0);
       });
       it('clears the screen', function () {
