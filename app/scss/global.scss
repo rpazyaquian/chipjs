@@ -22,8 +22,15 @@
 .chip-display, .registers-array, .address-register,
 .sound-timer, .delay-timer, .subroutine-stack,
 .register-item, .subroutine-item,
-.all-registers, .sub-registers, .timers {
+.main-registers, .sub-registers, .timers,
+.chip-canvas, .chip-canvas > canvas {
   border: 1px solid black;
   margin: 10px 10px;
+  padding: 10px 10px;
+}
+
+.chip-canvas > canvas, .chip-canvas > button {
+  display: block;
+  margin: 10px auto;
   padding: 10px 10px;
 }

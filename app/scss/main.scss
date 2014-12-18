@@ -4,12 +4,20 @@
 
 /* components */
 
-@import "all-registers";
+@import "main-registers";
 @import "components/subroutine-stack";
+@import "sub-registers";
 
-.all-registers, .subroutine-stack {
+.main-registers {
   display: inline-block;
   width: 46%;
+  box-sizing: border-box;
+  margin: 10px 2%;
+}
+
+.sub-registers, .subroutine-stack {
+  display: inline-block;
+  width: 21%;
   box-sizing: border-box;
   margin: 10px 2%;
 }

@@ -2,11 +2,10 @@
 
 var React = require('react');
 
+var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
 var AddressRegister = require('./subcomponents/addressRegister.jsx');
 var SoundTimer = require('./subcomponents/soundTimer.jsx');
 var DelayTimer = require('./subcomponents/delayTimer.jsx');
-
-// var Timers = require('./timers.jsx');
 
 var SubRegisters = React.createClass({
   render: function() {
@@ -27,8 +26,3 @@ var SubRegisters = React.createClass({
 });
 
 module.exports = SubRegisters;
-
-       // <Timers
-       //    delayTimer={this.props.delayTimer}
-       //    soundTimer={this.props.soundTimer}
-       //  />

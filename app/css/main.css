@@ -339,9 +339,14 @@ td, th {
   then add boxes around each V and each Subroutine
 
 */
-.chip-display, .registers-array, .address-register, .sound-timer, .delay-timer, .subroutine-stack, .register-item, .subroutine-item, .all-registers, .sub-registers, .timers {
+.chip-display, .registers-array, .address-register, .sound-timer, .delay-timer, .subroutine-stack, .register-item, .subroutine-item, .main-registers, .sub-registers, .timers, .chip-canvas, .chip-canvas > canvas {
   border: 1px solid black;
   margin: 10px 10px;
+  padding: 10px 10px; }
+
+.chip-canvas > canvas, .chip-canvas > button {
+  display: block;
+  margin: 10px auto;
   padding: 10px 10px; }
 
 /*
@@ -376,6 +381,15 @@ td, th {
 
 /*
 
+  describe my subroutine stack section:
+
+  a vertical box the height of the overall container.
+  inner boxes hold the currently stored addresses
+  in the subroutine items.
+
+*/
+/*
+
   describe my address register section:
 
   a box 2x wide as a register box.
@@ -395,29 +409,14 @@ td, th {
   a box the size of a register box.
 
 */
-.address-register {
+.main-registers {
   display: inline-block;
   width: 46%;
   box-sizing: border-box;
   margin: 10px 2%; }
 
-.sound-timer, .delay-timer {
+.sub-registers, .subroutine-stack {
   display: inline-block;
   width: 21%;
-  box-sizing: border-box;
-  margin: 10px 2%; }
-
-/*
-
-  describe my subroutine stack section:
-
-  a vertical box the height of the overall container.
-  inner boxes hold the currently stored addresses
-  in the subroutine items.
-
-*/
-.all-registers, .subroutine-stack {
-  display: inline-block;
-  width: 46%;
   box-sizing: border-box;
   margin: 10px 2%; }

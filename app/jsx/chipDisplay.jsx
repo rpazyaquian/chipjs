@@ -2,9 +2,9 @@
 
 var React = require('react');
 
+var MainRegisters = require('./mainRegisters.jsx');
 var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
-var AllRegisters = require('./allRegisters.jsx');
-
+var SubRegisters = require('./subRegisters.jsx');
 
 var ChipDisplay = React.createClass({
   render: function() {
@@ -16,14 +16,16 @@ var ChipDisplay = React.createClass({
           <button id="run-button">Run/Stop</button>
         </div>
         <div className="chip-display">
-          <AllRegisters
+          <MainRegisters
             registers={this.props.chipJS.registers}
+          />
+          <SubroutineStack
+            stack={this.props.chipJS.stack}
+          />
+          <SubRegisters
             addressRegister={this.props.chipJS.i}
             soundTimer={this.props.chipJS.soundTimer}
             delayTimer={this.props.chipJS.delayTimer}
-            />
-          <SubroutineStack
-            stack={this.props.chipJS.stack}
           />
         </div>
       </div>
@@ -32,6 +34,3 @@ var ChipDisplay = React.createClass({
 });
 
 module.exports = ChipDisplay;
-
-// currently off: RAM display. it's a LOT to render!
-// <Memory ram={this.props.chipJS.ram} />
