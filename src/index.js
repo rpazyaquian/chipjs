@@ -602,14 +602,16 @@ var ChipJS = function() {
     var column = Math.floor(x/8);
     var offset = x % 8;
 
+    var location = self.i;
+
     for (var i = 0; i < n; i++) {
       var row = y+i;
-      var spriteData = self.ram[self.i];
+      var spriteData = self.ram[location];
       var pixelsDidUnset = self.writeToDisplay(row, column, offset, spriteData);
       if ((self.registers[15] == 0x00) & pixelsDidUnset) {
         self.registers[15] == 0x01;
       }
-      self.i++;
+      location++;
     }
 
   };
