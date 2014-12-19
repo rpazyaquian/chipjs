@@ -87,6 +87,16 @@ App.readProgram = function(event) {
 
 App.runChipJS = function () {
   var self = this;
+
+  var wipeRegisters = function(self) {
+
+    for (var i = 0, length = 16; i < 16; i++) {
+      self.chipJS.registers[i] = 0x0;
+    }
+  }
+
+  wipeRegisters(self);
+
   self.chipJS.execute(0x00E0);
   self.chipJS.programCounter = 0x200;
   self.chipJS.i = 0x000;
@@ -94,7 +104,7 @@ App.runChipJS = function () {
     self.chipJS.tick();
     self.drawScreen();
     self.component.forceUpdate();
-  }, 1);
+  }, 0.1);
   self.running = true;
 };
 
@@ -154,7 +164,7 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
   render: function() {
     return (
       React.createElement("div", null, 
-        React.createElement("h1", null, "What goes in a ChipJS?"), 
+        React.createElement("h1", {className: "app-heading"}, "What goes in a ChipJS?"), 
         React.createElement("div", {className: "chip-canvas"}, 
           React.createElement("canvas", {id: "chipjs-canvas"}), 
           React.createElement("button", {id: "run-button"}, "Run/Stop")
@@ -601,6 +611,23 @@ TestPrograms.stack = [0x12,
 0x23,
 0x22,
 0x35]
+
+TestPrograms.waitKey = [
+0x60,
+0x14,
+0x61,
+0x0A,
+0xF2,
+0x0A,
+0x00,
+0xE0,
+0xF2,
+0x29,
+0xD0,
+0x15,
+0x12,
+0x04
+]
 
 module.exports = TestPrograms;
 },{}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
