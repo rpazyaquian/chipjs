@@ -10,7 +10,7 @@ var ChipDisplay = React.createClass({
   render: function() {
     return (
       <div>
-        <h1>What goes in a ChipJS?</h1>
+        <h1 className="app-heading">What goes in a ChipJS?</h1>
         <div className='chip-canvas'>
           <canvas id='chipjs-canvas'></canvas>
           <button id="run-button">Run/Stop</button>

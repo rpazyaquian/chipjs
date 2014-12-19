@@ -86,6 +86,16 @@ App.readProgram = function(event) {
 
 App.runChipJS = function () {
   var self = this;
+
+  var wipeRegisters = function(self) {
+
+    for (var i = 0, length = 16; i < 16; i++) {
+      self.chipJS.registers[i] = 0x0;
+    }
+  }
+
+  wipeRegisters(self);
+
   self.chipJS.execute(0x00E0);
   self.chipJS.programCounter = 0x200;
   self.chipJS.i = 0x000;
@@ -93,7 +103,7 @@ App.runChipJS = function () {
     self.chipJS.tick();
     self.drawScreen();
     self.component.forceUpdate();
-  }, 1);
+  }, 0.1);
   self.running = true;
 };
 
