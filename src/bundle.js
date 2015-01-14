@@ -64,6 +64,7 @@ App.drawScreen = function() {
 var maze = TestPrograms.maze;
 var smile = TestPrograms.smile;
 var stack = TestPrograms.stack;
+var subroutines = TestPrograms.subroutines;
 
 App.readProgram = function(event) {
   var f = event.target.files[0];
@@ -93,7 +94,7 @@ App.runChipJS = function () {
     for (var i = 0, length = 16; i < 16; i++) {
       self.chipJS.registers[i] = 0x0;
     }
-  }
+  };
 
   wipeRegisters(self);
 
@@ -104,6 +105,7 @@ App.runChipJS = function () {
     self.chipJS.tick();
     self.drawScreen();
     self.component.forceUpdate();
+    console.log(self.chipJS.stack);
   }, 0.1);
   self.running = true;
 };
@@ -150,13 +152,69 @@ $('#chipjs-canvas').on("keyup", App.releaseKey);
 
 App.chipJS.loadProgram(maze);
 
+$('#load-maze').on("click", function() {
+  App.chipJS.loadProgram(maze);
+});
+$('#load-smile').on("click", function() {
+  App.chipJS.loadProgram(smile);
+});
+$('#load-stack').on("click", function() {
+  App.chipJS.loadProgram(stack);
+});
+$('#load-subroutines').on("click", function() {
+  App.chipJS.loadProgram(subroutines);
+});
+
 App.initScreen();
-},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","./testPrograms.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/testPrograms.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","jquery":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/jquery/dist/jquery.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx":[function(require,module,exports){
+},{"./chipDisplay.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx","./testPrograms.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/testPrograms.jsx","chipjs":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/chipjs/src/index.js","jquery":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/jquery/dist/jquery.js","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/appInfo.jsx":[function(require,module,exports){
+var React = require('react');
+
+var AppDescription = React.createClass({displayName: 'AppDescription',
+  render: function() {
+    return (
+      React.createElement("div", {className: "app-description"}, 
+        React.createElement("p", null, 
+          "CHIP-8 is an old game development language from the 1970s, based entirely on hexadecimal instructions known as \"opcodes\" to manipulate data in memory. ChipJS is a Node-based implementation of a CHIP-8-like machine and interpreter, kept entirely separate from any sort of opinion on graphics rendering (libraries, etc.)."
+        ), 
+        React.createElement("p", null, 
+          "This web application uses the ChipJS Node module to expose the internals of a CHIP-8 virtual machine in a user-friendly format. It displays the current state of the memory registers, address registers, delay timers, and subroutines in the virtual machine."
+        )
+      )
+    );
+  }
+});
+
+var AppInfo = React.createClass({displayName: 'AppInfo',
+  getInitialState: function() {
+    return {
+      displayDescription: false
+    };
+  },
+  onHeaderClick: function(event) {
+    event.preventDefault();
+    var displayState = this.state.displayDescription;
+    this.setState({
+      displayDescription: !displayState
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {className: "app-info"}, 
+        React.createElement("a", {className: "info-header", onClick: this.onHeaderClick}, "(What is this?)"), 
+        this.state.displayDescription ? React.createElement(AppDescription, null) : null
+      )
+    );
+  }
+});
+
+module.exports = AppInfo;
+},{"react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/chipDisplay.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
 
 var MainRegisters = require('./mainRegisters.jsx');
+var AppInfo = require('./appInfo.jsx');
 var SubroutineStack = require('./subcomponents/subroutineStack.jsx');
 var SubRegisters = require('./subRegisters.jsx');
 
@@ -165,9 +223,17 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
     return (
       React.createElement("div", null, 
         React.createElement("h1", {className: "app-heading"}, "What goes in a ChipJS?"), 
+        React.createElement(AppInfo, null), 
         React.createElement("div", {className: "chip-canvas"}, 
           React.createElement("canvas", {id: "chipjs-canvas"}), 
-          React.createElement("button", {id: "run-button"}, "Run/Stop")
+          React.createElement("button", {id: "run-button"}, "Run/Stop"), 
+          React.createElement("div", null, 
+            React.createElement("h4", null, "Available Programs:"), 
+            React.createElement("button", {id: "load-maze"}, "Maze"), 
+            React.createElement("button", {id: "load-smile"}, "Smile"), 
+            React.createElement("button", {id: "load-stack"}, "Stack"), 
+            React.createElement("button", {id: "load-subroutines"}, "Subroutines")
+          )
         ), 
         React.createElement("div", {className: "chip-display"}, 
           React.createElement(MainRegisters, {
@@ -188,7 +254,7 @@ var ChipDisplay = React.createClass({displayName: 'ChipDisplay',
 });
 
 module.exports = ChipDisplay;
-},{"./mainRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/mainRegisters.jsx","./subRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/mainRegisters.jsx":[function(require,module,exports){
+},{"./appInfo.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/appInfo.jsx","./mainRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/mainRegisters.jsx","./subRegisters.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subRegisters.jsx","./subcomponents/subroutineStack.jsx":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/subcomponents/subroutineStack.jsx","react":"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/react/react.js"}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/app/jsx/mainRegisters.jsx":[function(require,module,exports){
 /** @jsx React.DOM */
 
 var React = require('react');
@@ -428,7 +494,7 @@ var SubroutineStack = React.createClass({displayName: 'SubroutineStack',
 
     var subroutineIndex = -1;
 
-    var subroutines = _und.map(this.props.subroutineStack, function(subroutine) {
+    var subroutines = _und.map(this.props.stack, function(subroutine) {
 
       subroutineIndex += 1;
 
@@ -628,6 +694,8 @@ TestPrograms.waitKey = [
 0x12,
 0x04
 ]
+
+TestPrograms.subroutines = [0x12, 0x72, 0xF0, 0x29, 0xDA, 0xB5, 0x7A, 0x05, 0x60, 0x00, 0x00, 0xEE, 0x6A, 0x00, 0x7B, 0x06, 0x00, 0xEE, 0x83, 0x20, 0x83, 0x15, 0x3F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x63, 0x05, 0x83, 0x15, 0x3F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x83, 0x20, 0x83, 0x17, 0x3F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x63, 0x05, 0x83, 0x17, 0x3F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x83, 0x20, 0x83, 0x17, 0x4F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x63, 0x05, 0x83, 0x17, 0x4F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x83, 0x20, 0x83, 0x15, 0x4F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x63, 0x05, 0x83, 0x15, 0x4F, 0x01, 0x60, 0x01, 0x22, 0x02, 0x00, 0xEE, 0x61, 0x03, 0x62, 0x05, 0x22, 0x12, 0x61, 0x03, 0x62, 0x03, 0x22, 0x12, 0x61, 0x05, 0x62, 0x03, 0x22, 0x12, 0x61, 0x03, 0x22, 0x1E, 0x61, 0x05, 0x22, 0x1E, 0x61, 0x07, 0x22, 0x1E, 0x22, 0x0C, 0x61, 0x03, 0x62, 0x05, 0x22, 0x2A, 0x61, 0x03, 0x62, 0x03, 0x22, 0x2A, 0x61, 0x05, 0x62, 0x03, 0x22, 0x2A, 0x61, 0x03, 0x22, 0x36, 0x61, 0x05, 0x22, 0x36, 0x61, 0x07, 0x22, 0x36, 0x22, 0x0C, 0x61, 0x03, 0x62, 0x05, 0x22, 0x42, 0x61, 0x03, 0x62, 0x03, 0x22, 0x42, 0x61, 0x05, 0x62, 0x03, 0x22, 0x42, 0x61, 0x03, 0x22, 0x4E, 0x61, 0x05, 0x22, 0x4E, 0x61, 0x07, 0x22, 0x4E, 0x22, 0x0C, 0x61, 0x03, 0x62, 0x05, 0x22, 0x5A, 0x61, 0x03, 0x62, 0x03, 0x22, 0x5A, 0x61, 0x05, 0x62, 0x03, 0x22, 0x5A, 0x61, 0x03, 0x22, 0x66, 0x61, 0x05, 0x22, 0x66, 0x61, 0x07, 0x22, 0x66];
 
 module.exports = TestPrograms;
 },{}],"/Users/rebecca/Desktop/WDI/project_3/chipjs-app/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){

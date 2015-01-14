@@ -344,8 +344,11 @@ td, th {
   margin: 10px 10px;
   padding: 10px 10px; }
 
-.app-heading {
+.app-heading, .app-info {
   margin: 10px 10px; }
+
+.info-header {
+  text-decoration: underline; }
 
 .chip-canvas > canvas, .chip-canvas > button {
   display: block;
